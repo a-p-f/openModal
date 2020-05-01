@@ -9,17 +9,26 @@ body {
 
 
 .AlertModal {
-	margin: 15px;
 	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
 }
 .AlertModal body {
-	max-width: 100%;
-	max-height: 100%;
 	margin: 0;
-	padding: 0;
+
+	/* sets minimum gap between the "Alert Window" and the viewport boundary */
+	/* feel free to override */
+	padding: 15px;
+
+	box-sizing: border-box;
+	max-width: 100%;
+
+	/* TODO - don't think this is necessary*/
+	max-height: 100%;
+
+	display: flex;
+	flex-direction: column;
 }
 .AlertModal,
 .AlertModal body {
@@ -30,31 +39,35 @@ body {
 	*/
 	background-color: transparent !important;
 }
-
 .AlertModalScroller {
 	border: 1px solid #aaa;
 	border-radius: 5px;
 	box-shadow: 0 0 10px 5px #888;
 	background-color: white;
 	margin: 0;
-	/* If you add padding to this element, */
-	padding: 0 !important;
-	/*padding: 1rem;*/
-	overflow: auto;
-}
-.AlertModalScroller > * {
-	display: inline-block;
-	padding: 1rem;
-}
-/*
-	We need to put an opaque background color on whatever is inside the body.
-	Note that we intentionally keep the specificity of this selector low, so that a single class selector can be used to override this on children of the body.
 
-	You can set whatever background color you want on direct children of the body, but it must be opaque, or the parent window will show through.
-*/
-/*.AlertModal > * > * {
-	background-color: white;
+	/* padding-right does not work on this element if it overflows and scrolls */
+	/* use padding-right on child, or padding or margin on grandchildren (or deeper) */
+	/* You MAY set left, top, bottom padding, though */
+	padding-right: 0 !important;
 	overflow: auto;
-	border-radius: 5px;
-	padding: 1rem;
-}*/
+
+	/* Allow child items to be wider than this element, so we actually scroll */
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+.AlertModalScrollerInner {
+	/* 
+		margin-right does not work on this element if the scroller overflows and scrolls (the margin doesn't increase the scroll width, element will end up tight to the parent bound when scrolling is maxed out)
+
+		It's a flex-child, so top/bottom margin will not collapse with child margins, either. For that reason, you might as well just stick to padding on this element. 
+	*/
+	margin: 0 !important;
+
+	/* 
+		padding between content and scroller.
+		Feel free to override.
+	*/
+	padding: 0 1rem;
+}
