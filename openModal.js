@@ -10,13 +10,15 @@ function openModal(url) {
 	}
 	addEventListener('scroll', fixScroll);
 
+	// force focus to stay in iframe
+	function focus_iframe() {
+		iframe.focus();
+	}
+	addEventListener('focus', focus_iframe, true);
+
 	var previousElement = document.activeElement;
 	var iframe = document.createElement('iframe');
 
-	// force focus to stay in iframe
-	iframe.addEventListener('blur', function() {
-		iframe.focus();
-	});
 	iframe.addEventListener('load', function() {
 		var iw = iframe.contentWindow;
 		var ft = iw.document.querySelector('[autofocus]');
@@ -32,6 +34,7 @@ function openModal(url) {
 		if (document.documentElement.contains(iframe)) return
 		previousElement && previousElement.focus();
 		removeEventListener('scroll', fixScroll);
+		removeEventListener('focus', focus_iframe, true);
 	});
 
 	// Not used by us, but users can use this class if custom styling is required
