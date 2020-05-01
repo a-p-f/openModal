@@ -6,25 +6,55 @@ body {
 	margin: 1rem;
 }
 
-html.AlertWrapper {
+
+
+.AlertModal {
+	margin: 15px;
 	height: 100%;
-}
-.AlertWrapper body {
-	box-sizing: border-box;
-	height: 100%;
-	margin: 0;
-	padding: 15px;
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
 }
-.AlertWrapper body > * {
-	max-height: 100%;
+.AlertModal body {
 	max-width: 100%;
+	max-height: 100%;
+	margin: 0;
+	padding: 0;
 }
-.BorderWindow {
-	background-color: white;
+.AlertModal,
+.AlertModal body {
+	/*
+		This style is here to remind you that background color on html or body does NOT work. Background color on those elements will fill the entire window (iframe, in this case), even if the element does not.
+
+		When using AlertModal, you should generally add a wrapper div around all of the body content, and set background color on that
+	*/
+	background-color: transparent !important;
+}
+
+.AlertModalScroller {
+	border: 1px solid #aaa;
 	border-radius: 5px;
 	box-shadow: 0 0 10px 5px #888;
+	background-color: white;
+	margin: 0;
+	/* If you add padding to this element, */
+	padding: 0 !important;
+	/*padding: 1rem;*/
+	overflow: auto;
+}
+.AlertModalScroller > * {
+	display: inline-block;
 	padding: 1rem;
 }
+/*
+	We need to put an opaque background color on whatever is inside the body.
+	Note that we intentionally keep the specificity of this selector low, so that a single class selector can be used to override this on children of the body.
+
+	You can set whatever background color you want on direct children of the body, but it must be opaque, or the parent window will show through.
+*/
+/*.AlertModal > * > * {
+	background-color: white;
+	overflow: auto;
+	border-radius: 5px;
+	padding: 1rem;
+}*/
