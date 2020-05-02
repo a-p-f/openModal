@@ -1,7 +1,0 @@
-#!/bin/bash
-rm -r dist
-mkdir dist
-cp -RP src/demo dist/demo
-cp src/modalUtils.css dist/
-node_modules/.bin/parcel build --no-source-maps --no-content-hash -o dist/modalUtils.min.css src/modalUtils.css 
-node_modules/.bin/rollup -c

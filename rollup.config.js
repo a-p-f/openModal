@@ -11,7 +11,7 @@ export default [
   {
     input: 'src/openModal.js',
     output: {
-      file: 'dist/openModal.js',
+      file: 'staging/openModal/openModal.js',
       format: 'iife',
     },
     plugins,
@@ -19,7 +19,7 @@ export default [
   {
     input: 'src/modalUtils.js',
     output: {
-      file: 'dist/modalUtils.js',
+      file: 'staging/openModal/modalUtils.js',
       format: 'iife',
     },
     plugins,

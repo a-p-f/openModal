@@ -1,0 +1,9 @@
+#!/bin/bash
+rm -r staging
+mkdir -p staging/openModal
+cp demo/*.html staging
+cp demo/*.css staging
+
+cp src/modalUtils.css staging/openModal/
+node_modules/.bin/parcel build --no-source-maps --no-content-hash -o staging/openModal/modalUtils.min.css src/modalUtils.css 
+node_modules/.bin/rollup -c
