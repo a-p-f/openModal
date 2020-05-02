@@ -1,9 +1,11 @@
 import babel from 'rollup-plugin-babel';
+import { terser } from "rollup-plugin-terser";
 
 const plugins = [
   babel({
     exclude: 'node_modules/**' // only transpile our source code
-  })
+  }),
+  terser(),
 ];
 export default [
   {
