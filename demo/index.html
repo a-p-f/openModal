@@ -72,77 +72,57 @@
 	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo.</p>
 	<button type="button" onclick="openModal('nestable_alert.html');">Show Me The Nesting</button>
 
-
-
-		
-
 	<h2>Tips/Patterns</h2>
-	<p>You already know everything there is to know about <code>openModal()</code>.</p> What follows is a collection of tips/design patterns for implementing different types of modals.
+	<p>You already know everything there is to know about <code>openModal()</code>. What follows is a collection of tips/design patterns for implementing different types of modals.
+
 	<h3>Full-page Layers</h3>
-	<p>If your iframe performs navigation within itself, put a solid background color on iframe. Otherwise, the parent window will show through during navigations. <br>
+	<p>If your iframe performs navigation within itself, put a background color on iframe (rather than the html/body element). Otherwise, the parent window will show through during navigations. <br>
 	<button type="button" onclick="openModal('full_page.html');">Without iframe background</button>
 	<button type="button" onclick="
 		openModal('full_page.html').style.backgroundColor = 'white';
 	">With iframe background</button>
 
 	<h3>Alert Modal</h3>
+	<p>The alert modal we've been using thus far is very flexible. It requires two wrapper elements around all of the body contents. You could get away with just one wrapper element if you didn't need horizontal scrolling, but we recommend using the full "AlertModal" markup as a default.</p>
+	<p>We recommend copying the <code>.AlertModal*</code> styles from <a href="./style.css">style.css</a>, and pasting into your own stylesheet. There are comments in the styles indicating the properties you may want to change/override.</p>
 	<button type="button" onclick="openModal('alert.html');">
 		Open Alert Modal</button>
+	<button type="button" onclick="openModal('alert.html', function(iframe) {
+		iframe.contentDocument.documentElement.classList.add('AlertModalTopBiased');
+	});">
+		"Top Biased" variant</button>
+	<button type="button" onclick="openModal('alert.html', function(iframe) {
+		iframe.contentDocument.documentElement.style.alignItems = 'center';
+	});">
+		Vertically Centered</button>
+	<button type="button" onclick="openModal('alert.html', function(iframe) {
+		var div = iframe.contentDocument.querySelector('.AlertModalScroller');
+		div.style.width = '800px';
+		div.style.height = '500px';
+	});">
+		Initial Dimensions</button>
 
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<button onclick="openModal('green.html');">Open Greeen Modal</button>
+	<h2>TODO</h2>
+	<h3>Cross Origin Iframes</h3>
+	<p>We plan to support cross origin iframes. The following limitations will apply:</p>
+	<ul>
+		<li>the iframe's document must also include openModal.js</li>
+		<li>any inter-window communication you perform in <code>onload</code> must be limited to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">postMessage API</a></li>
+		<li>any value passed to <code>closeModal()</code> must serializable by the postMessage API</li>
+	</ul>
 
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<h3>Cross Browser Testing</h3>
+	<p>'nough said.</p>
+
+	<h3>Opera Mini Support</h3>
+	<p>We rely on <code>position: fixed;</code>. Opera Mini appears to be the only current browser not supporting this (<a href="https://caniuse.com/#feat=css-fixed">https://caniuse.com/#feat=css-fixed</a>).</p>
+	<p>We may be able to implement a fallback using <code>position: absolute;</code> and calculating the required top/left values using <code>iframe.getBoundingClientRect()</code> after initially placing it in the DOM.</p>
+
+	<h3>Smarter Scroll Locking</h3>
+	<p>We use a scoll event listener to lock the document scroll position, rather than setting <code>overflow: hidden;</code> while a modal is open.</p>
+	<p>The latter technique is more efficient, and would prevent any "jitter" while the user scrolls. However, it should not be used if the browser renders scroll bars that take up space in the viewport (showing/hiding scrollbars when opening a modal can be distracting, or even break layouts entirely).</p>
+	<p>We can probably detect, at the time <code>openModal()</code> is called, whether there are currently any "space taking" scrollbars, and use the most appropriate technique.</p>
+
+
 </body>
 </html>

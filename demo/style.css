@@ -10,70 +10,112 @@ h2 {
 }
 
 
-.MagicModal
 
+/*
+	AlertModal
+	Implements a "window" which:
+		- is centered horizontally in the viewport
+		- grows as needed to fit content
+		- supports a "minimum margin" around the window
+		- supports a border and border radius
+		- scrolls within the window, 
+			rather than moving the entire window in the viewport
 
-
+	Most styles should not be overridden, except where indicated.
+*/
 .AlertModal {
 	height: 100%;
 	display: flex;
 	justify-content: center;
+	/* set center if you want the window vertically centered */
 	align-items: flex-start;
 }
-.AlertModal body {
-	margin: 0;
-
-	/* sets minimum gap between the "Alert Window" and the viewport boundary */
-	/* feel free to override */
+.AlertModal > body {
+	/* 
+		sets minimum gap between the "Alert Window" and the viewport boundary 
+		feel free to override
+		feel free to use relative units, for a larger gap on larger screens
+	*/
 	padding: 15px;
 
+	margin: 0;
 	box-sizing: border-box;
 	max-width: 100%;
-
-	/* TODO - don't think this is necessary*/
 	max-height: 100%;
-
 	display: flex;
 	flex-direction: column;
 }
-.AlertModal,
-.AlertModal body {
-	/*
-		This style is here to remind you that background color on html or body does NOT work. Background color on those elements will fill the entire window (iframe, in this case), even if the element does not.
-
-		When using AlertModal, you should generally add a wrapper div around all of the body content, and set background color on that
-	*/
-	background-color: transparent !important;
-}
+/* sole direct child of body */
 .AlertModalScroller {
+	/*
+		Feel free to override any of these
+	*/
 	border: 1px solid #aaa;
 	border-radius: 5px;
 	box-shadow: 0 0 10px 5px #888;
 	background-color: white;
-	margin: 0;
 
-	/* padding-right does not work on this element if it overflows and scrolls */
-	/* use padding-right on child, or padding or margin on grandchildren (or deeper) */
-	/* You MAY set left, top, bottom padding, though */
+	/*
+		Feel free to set explicit width/height - either absolute or relative
+		These will be treated as "initial" width/height -
+		the window will still be limited by viewport and body padding
+	*/
+	width: auto;
+	height: auto;
+
+
+	/* 
+		padding-right will work if it does not have overflow,
+		it will do NOTHING if it does have overflow
+		padding-right does not work on this element if it  
+	*/
 	padding-right: 0 !important;
+	margin: 0;
+	padding: 0;
+	max-width: 100%;
 	overflow: auto;
-
 	/* Allow child items to be wider than this element, so we actually scroll */
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 }
+/* sole direct child of AlertModalScroller */
 .AlertModalScrollerInner {
 	/* 
-		margin-right does not work on this element if the scroller overflows and scrolls (the margin doesn't increase the scroll width, element will end up tight to the parent bound when scrolling is maxed out)
+		margin-right will work if the parent does not have overflow,
+		it will do NOTHING if the parent does have overflow
 
-		It's a flex-child, so top/bottom margin will not collapse with child margins, either. For that reason, you might as well just stick to padding on this element. 
+		This is a flex-child, so top/bottom margin will not collapse with child margins, either. For that reason, you might as well just stick to padding on this element. 
 	*/
 	margin: 0 !important;
 
 	/* 
 		padding between content and scroller.
 		Feel free to override.
+		We recommend horizontal padding, and using top/bottom margins on your children for vertical spacing.
 	*/
 	padding: 0 1rem;
+
+	/* 
+		uncomment these if you'd rather hide horizontal overflow than scroll
+	*/
+	/*box-sizing: border-box;*/
+	/*max-width: 100%;*/
+}
+
+/* 
+	Add to .AlertModal for something in between vertically-centered and fixed at the top
+*/
+.AlertModalTopBiased {
+	align-items: stretch;
+}
+.AlertModalTopBiased>body:before {
+	content: ' ';
+	display: block;
+	flex-grow: 1;
+}
+.AlertModalTopBiased>body:after {
+	content: ' ';
+	display: block;
+	flex-grow: 4;
 }

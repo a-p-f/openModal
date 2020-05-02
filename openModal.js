@@ -53,6 +53,7 @@ function openModal(url, onload, onclose) {
 	// (ie. set z-index on the iframe)
 	iframe.classList.add('openModalIframe');
 	iframe.style = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; margin: 0; padding: 0;';
+	// TODO - fallback for browsers not supporting position: fixed (Opera Mini)
 	iframe.setAttribute('role', 'dialog');
 	// TODO - test with screen reader in Safari, ensure content is accessible
 	// See https://bugs.webkit.org/show_bug.cgi?id=174667
@@ -62,5 +63,6 @@ function openModal(url, onload, onclose) {
 
 	iframe.src = url;
 	document.body.appendChild(iframe);
+	iframe.focus();
 	return iframe
 }
