@@ -8,7 +8,6 @@
 <body>
 	<h1>openModal - Dead Simple Iframe Based Modal Dialogs</h1>
 	<h2>Concept</h2>
-	<p><code>openModal()</code> is as much a design pattern as it a javascript library. The code is tiny, but the potential applications are huge.</p>
 	<p><code>openModal()</code> works much like <code>window.open()</code>. Instead of a native OS level window, however, it creates a full-page, modal iframe.</p>
 	<p><code>openModal()</code> is infinitely nestable - any iframe can open another.</p>
 	<p>Even though each iframe covers the entire viewport, it need not be fully opaque. Each iframe's document can decide:
@@ -69,6 +68,8 @@
 		(Test Button)</button>
 
 	<h2>Nesting</h2>
+	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
+	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo.</p>
 	<button type="button" onclick="openModal('nestable_alert.html');">Show Me The Nesting</button>
 
 
@@ -76,9 +77,13 @@
 		
 
 	<h2>Tips/Patterns</h2>
+	<p>You already know everything there is to know about <code>openModal()</code>.</p> What follows is a collection of tips/design patterns for implementing different types of modals.
 	<h3>Full-page Layers</h3>
-	put background color on iframe, otherwise it flickers during navigation
-	<button type="button" onclick="openModal('simple.html');">Open Simple Modal</button>
+	<p>If your iframe performs navigation within itself, put a solid background color on iframe. Otherwise, the parent window will show through during navigations. <br>
+	<button type="button" onclick="openModal('full_page.html');">Without iframe background</button>
+	<button type="button" onclick="
+		openModal('full_page.html').style.backgroundColor = 'white';
+	">With iframe background</button>
 
 	<h3>Alert Modal</h3>
 	<button type="button" onclick="openModal('alert.html');">

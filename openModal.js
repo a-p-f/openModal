@@ -45,7 +45,6 @@ function openModal(url, onload, onclose) {
 		var ft = iw.document.querySelector('[autofocus]');
 		ft && ft.focus();
 		iframe.setAttribute('aria-label', iw.document.title);
-		iw.openModal = iw.openModal || openModal;
 		iw.closeModal = iframe.closeModal;
 		if (onload) onload(iframe);
 	});
@@ -59,7 +58,7 @@ function openModal(url, onload, onclose) {
 	// See https://bugs.webkit.org/show_bug.cgi?id=174667
 	// and https://developer.paciellogroup.com/blog/2018/06/the-current-state-of-modal-dialog-accessibility/
 	// which suggest there is a serious issue in safari
-	iframe.setAttribute('aria-modal', 'true');
+	// iframe.setAttribute('aria-modal', 'true');
 
 	iframe.src = url;
 	document.body.appendChild(iframe);
