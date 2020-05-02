@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html class="AlertModal">
+<link rel="stylesheet" href="./style.css">
+<title>Standard Features</title>
+<body>
+<div class="AlertModalScroller">
+<div class="AlertModalScrollerInner" style="width: 500px;">
+	<h1>Standard Features:</h1>
+	<ul>
+		<li>The parent window cannot be scrolled while this is open.</li>
+		<li>Clicking on the parent window does nothing.</li>
+		<li>Pressing the tab key will not move focus to the parent window.</li>
+		<li>Programmatically calling <code>click()</code> or <code>focus()</code> on an element in the parent window has no effect. 
+		<button onclick="
+			var button = window.parent.document.getElementById('alert_something');
+			button.click();
+			button.focus();
+		">Verify</button>
+		<li>The iframe has <code>aria-modal="true"</code>, which informs assistive technologies that elements in the parent window are not currently interactive. Vimium, for example, generates no "hints" for elements in the parent window.</li>
+		<li>the close button below auto-focuses (because we added the <code>autofocus</code> attribute)</li>
+		<li><button onclick="location.reload();">Clicking this button</button> will reload this iframe, and the close button will focus again</li>
+		<li>openModal.js is NOT included on this page, but <code>closeModal()</code> is still available globally</li>
+	</ul>
+	<p>
+		<button onclick="closeModal();" autofocus>Close</button>
+	</p>
+</div>
+</div>

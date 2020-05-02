@@ -7,13 +7,78 @@
 </head>
 <body>
 	<h1>openModal - Dead Simple Iframe Based Modal Dialogs</h1>
+	<h2>Concept</h2>
+	<p><code>openModal()</code> is as much a design pattern as it a javascript library. The code is tiny, but the potential applications are huge.</p>
+	<p><code>openModal()</code> works much like <code>window.open()</code>. Instead of a native OS level window, however, it creates a full-page, modal iframe.</p>
+	<p><code>openModal()</code> is infinitely nestable - any iframe can open another.</p>
+	<p>Even though each iframe covers the entire viewport, it need not be fully opaque. Each iframe's document can decide:
+	</p>
+	<ul>
+		<li>whether to cover the entire viewport with visible content</li>
+		<li>whether to render a backdrop</li>
+	</ul>
+	<p>Each iframe can implement it's own:</p>
+	<ul>
+		<li>entrance/exit animations</li>
+		<li>user interactions like drag/resize/snap to edges</li>
+	</ul>
+	<p>With this approach, you can easily create <strong>resuable, self-contained, cooperative, lazy loading</strong> widgets/user interfaces.</p>
 
-	<button type="button" onclick="openModal('simple.html');">
-		Open Simple Modal</button>
+	<h2>Installation</h2>
+	TODO
+
+	<h2>API</h2>
+
+	<h3><code>openModal(url [, onload] [, onclose]) -> iframe</code></h3>
+	<p>Create an iframe with <code>src</code> set to <code>url</code>, and position it such that it covers the entire viewport. Return the iframe.</p>
+	<p><code>onload</code> will be called every time the iframe loads a new page, with the iframe as the sole argument. Use this callback to setup or initialize the child window.</p>
+	<p><code>onclose</code> will be called when the iframe is removed via <code>closeModal([value])</code>. Any value passed to <code>closeModal</code> will be passed on to <code>onclose</code>. This callback isn't strictly necessary (you can setup two way communication using <code>onload</code>), but is a convenient way to pass information back from the child window to the parent.</p>
+
+	<h3><code>closeModal([value])</code></h3>
+	<p>Remove the iframe modal from the DOM, and invoke any <code>onclose</code> callback that was passed to <code>openModal</code>.</p>
+	<p>This function is made available globally as a property of the iframe's <code>contentWindow</code>, and as a property on the iframe element (so either the parent window or the child window can dismiss the child).</p>
+
+	<h3>Demo</h3>
+	<p>The button below demonstrates all the features of the API. You can inspect it to see what the click handler does.</p>
+	<button onclick="
+		var iframe = openModal('communication_demo.html', function(iframe) {
+			iframe.contentWindow.initialize(5);
+		}, function(value) {
+			alert('the child window closed with value '+value);
+		});
+
+		// you shouldn't often need to do much with the iframe,
+		// but you might want to set a backgroundColor
+		iframe.style.backgroundColor = '#DFD';
+
+		// you can close the iframe yourself
+		setTimeout(function() {
+			if (!iframe.parentElement) {
+				// The iframe already closed itself
+				return
+			}
+			iframe.closeModal('baz');
+		}, 10000);
+	">Demonstrate the API</button>
+
+
+	<h2>Accessibility / Usability Features</h2>
+	<button type="button" onclick="openModal('basic_features.html');">
+		Show Me The Features</button>
+	<button id="alert_something" onclick="alert('You clicked the test button');">
+		(Test Button)</button>
+
+	<h2>Nesting</h2>
+	<button type="button" onclick="openModal('nestable_alert.html');">Show Me The Nesting</button>
+
+
+
+		
 
 	<h2>Tips/Patterns</h2>
 	<h3>Full-page Layers</h3>
 	put background color on iframe, otherwise it flickers during navigation
+	<button type="button" onclick="openModal('simple.html');">Open Simple Modal</button>
 
 	<h3>Alert Modal</h3>
 	<button type="button" onclick="openModal('alert.html');">
@@ -25,5 +90,54 @@
 	<br>
 	<br>
 	<button onclick="openModal('green.html');">Open Greeen Modal</button>
+
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 </body>
 </html>

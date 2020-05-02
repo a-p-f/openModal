@@ -1,7 +1,14 @@
-function openModal(url) {
+function openModal(url, onload, onclose) {
 	'use strict';
 
 	// scroll locking
+	/*
+		TODO: ?
+		Detect if scroll bar currently takes up any space (most new browsers just render scroll bar over top of content).
+		If not, then just set overflow: hidden.
+		Current implementation can be a little jittery, and overflow: hidden would fix that.
+		The reason 
+	*/
 	var scrollTop = document.documentElement.scrollTop;
 	var scrollLeft = document.documentElement.scrollLeft;
 	function fixScroll() {
@@ -10,31 +17,37 @@ function openModal(url) {
 	}
 	addEventListener('scroll', fixScroll);
 
+	function cancel(event) {
+		event.stopPropagation();
+		event.preventDefault();
+	}
+	addEventListener('click', cancel, true);
+
 	// force focus to stay in iframe
 	function focus_iframe() {
-		iframe.focus();
+		if (document.activeElement != iframe) iframe.focus();
 	}
-	addEventListener('focus', focus_iframe, true);
+	document.body.addEventListener('focus', focus_iframe, true);
 
 	var previousElement = document.activeElement;
 	var iframe = document.createElement('iframe');
 
+	iframe.closeModal = function(value) {
+		removeEventListener('scroll', fixScroll);
+		document.body.removeEventListener('focus', focus_iframe, true);
+		removeEventListener('click', cancel, true);
+		iframe.parentElement.removeChild(iframe);
+		previousElement && previousElement.focus();
+		if (onclose) onclose(value);
+	}
 	iframe.addEventListener('load', function() {
 		var iw = iframe.contentWindow;
 		var ft = iw.document.querySelector('[autofocus]');
 		ft && ft.focus();
 		iframe.setAttribute('aria-label', iw.document.title);
 		iw.openModal = iw.openModal || openModal;
-		iw.closeModal = function() {
-			iframe.parentElement.removeChild(iframe);
-		}
-	});
-	// cleanup after the iframe has been removed from DOM
-	iframe.addEventListener('unload', function() {
-		if (document.documentElement.contains(iframe)) return
-		previousElement && previousElement.focus();
-		removeEventListener('scroll', fixScroll);
-		removeEventListener('focus', focus_iframe, true);
+		iw.closeModal = iframe.closeModal;
+		if (onload) onload(iframe);
 	});
 
 	// Not used by us, but users can use this class if custom styling is required

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html class="AlertModal">
+<link rel="stylesheet" href="./style.css">
+<title>API Demo</title>
+<script>
+	// Will be called by parent window when we load
+	function initialize(value) {
+		document.getElementById('number_input').value = value;
+	}
+</script>
+<body>
+<div class="AlertModalScroller">
+<div class="AlertModalScrollerInner">
+	<h1>API Demo</h1>
+	<p>Note - the parent window will remove this iframe automatically in 10 seconds. Try completing the form below once, and then re-open this modal and let the parent close it.</p>
+
+	<form onsubmit="closeModal(this.elements.number_input.value);">
+		<p><label>
+			A number: <input type="number" id="number_input" name="number_input" value="">
+		</label></p>
+		<p>
+			<button>Submit</button>
+		</p>
+	</form>
+</div>
+</div>
