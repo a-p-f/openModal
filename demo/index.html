@@ -75,6 +75,10 @@
 	<h2>Tips/Patterns</h2>
 	<p>You already know everything there is to know about <code>openModal()</code>. What follows is a collection of tips/design patterns for implementing different types of modals.
 
+	<h3>Easy Exit</h3>
+	<p>Want to close the modal on backdrop click or escape key? See the event handlers on the html element in this modal. <br>
+	<button onclick="openModal('easy_exit.html');">Easy Exit Demo</button>
+
 	<h3>Full-page Layers</h3>
 	<p>If your iframe performs navigation within itself, put a background color on iframe (rather than the html/body element). Otherwise, the parent window will show through during navigations. <br>
 	<button type="button" onclick="openModal('full_page.html');">Without iframe background</button>
@@ -103,6 +107,9 @@
 		Initial Dimensions</button>
 
 	<h2>TODO</h2>
+	<h3>Modal Utils</h3>
+	<p>Create modal_utils.js and modal_utils.css. Move .AlertModal there. Create js helpers for draggable windows, edge snapping, etc. Move "easy exit" feature there, too.</p>
+
 	<h3>Cross Origin Iframes</h3>
 	<p>We plan to support cross origin iframes. The following limitations will apply:</p>
 	<ul>
@@ -122,7 +129,5 @@
 	<p>We use a scoll event listener to lock the document scroll position, rather than setting <code>overflow: hidden;</code> while a modal is open.</p>
 	<p>The latter technique is more efficient, and would prevent any "jitter" while the user scrolls. However, it should not be used if the browser renders scroll bars that take up space in the viewport (showing/hiding scrollbars when opening a modal can be distracting, or even break layouts entirely).</p>
 	<p>We can probably detect, at the time <code>openModal()</code> is called, whether there are currently any "space taking" scrollbars, and use the most appropriate technique.</p>
-
-
 </body>
 </html>

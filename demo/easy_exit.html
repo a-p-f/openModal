@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html 
+	class="AlertModal"
+	onclick="
+		if(!document.querySelector('.AlertModalScroller').contains(event.target)) closeModal();
+	"
+	onkeydown="if(event.key=='Escape') closeModal();" 
+>
+<link rel="stylesheet" href="./style.css">
+<title>Alert Modal</title>
+<body>
+<div class="AlertModalScroller">
+<div class="AlertModalScrollerInner">
+	<h1>Alert Window</h1>
+	<p>Note that:</p>
+	<ul>
+		<li>the background of the iframe is transparent</li>
+		<li>the "window" automatically adjusts size to content</li>
+		<li>
+			the "window" will adjust in size as you resize this textarea: <br>
+			<textarea></textarea>
+		</li>
+		<li>the "window" scrolls if necessary (both horizontally and vertically)</li>
+	</ul>
+	<p>
+		<button onclick="closeModal();" autofocus>Close</button>
+	</p>
+</div>
+</div>
