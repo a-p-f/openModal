@@ -1,15 +1,21 @@
 <!DOCTYPE html>
 <html 
 	class="AlertModal"
-	onclick="
-		if(!document.querySelector('.AlertModalScroller').contains(event.target)) closeModal();
-	"
-	onkeydown="if(event.key=='Escape') closeModal();" 
 >
+
 <link rel="stylesheet" href="./style.css">
+<script type="module" src="../modalUtils.js"></script>
+<script nomodule defer src="../modalUtils.js"></script>
+
+<script>
+	addEventListener('load', function() {
+		modalUtils.easyExit(document.body.firstElementChild);
+	});
+</script>
+
 <title>Alert Modal</title>
 <body>
-<div class="AlertModalScroller">
+<div class="AlertModalScroller" mu-easy-exit-root>
 <div class="AlertModalScrollerInner">
 	<h1>Alert Window</h1>
 	<p>Note that:</p>

@@ -1,4 +1,4 @@
-function openModal(url, onload, onclose) {
+window.openModal = function(url, onload, onclose) {
 	'use strict';
 
 	// scroll locking
