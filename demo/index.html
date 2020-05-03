@@ -24,7 +24,11 @@
 	<p>With this approach, you can easily create <strong>resuable, self-contained, cooperative, lazy loading</strong> widgets/user interfaces.</p>
 
 	<h2>Installation</h2>
-	TODO
+	<p>Get the latest distribution: <br><code>
+		curl -O ... && tar -xf openModal.tar.gz && rm openModal.tar.gz
+	</code></p>
+	<p>Or get the whole package from npm: <br>
+		<code>npm install openmodal</code></p>
 
 	<h2>API</h2>
 
@@ -72,11 +76,11 @@
 	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo.</p>
 	<button type="button" onclick="openModal('nestable_alert.html');">Show Me The Nesting</button>
 
-	<h2>Tips/Patterns</h2>
-	<p>You already know everything there is to know about <code>openModal()</code>. What follows is a collection of tips/design patterns for implementing different types of modals.
+	<h2>Tips/Patterns &amp; modalUtils</h2>
+	<p>You already know everything there is to know about <code>openModal()</code>. Along with openModal.js, we also distribute modalUtils.js and modalUtils.css. These helper utilities help you implement common modal features/layouts. Note that your base page doesn't need to include modalUtils (css or js) - only your modal pages. You may find modalUtils useful even without openModal. Finally, you can use modalUtils.css directly, but you might also want to copy/paste the styles into your own stylesheet and modify as needed. We include an un-minified version in our distribution code, with lots of comments about the styles you may want to override/change.</p>
 
 	<h3>Easy Exit</h3>
-	<p>Want to close the modal on backdrop click or escape key? See the event handlers on the html element in this modal. <br>
+	<p>Close the modal when clicking outside the main "visible element" or by hitting the escape key:<br>
 	<button onclick="openModal('easy_exit.html');">Easy Exit Demo</button>
 
 	<h3>Full-page Layers</h3>
@@ -87,7 +91,9 @@
 	">With iframe background</button>
 
 	<h3>Alert Modal</h3>
-	<p>The alert modal we've been using thus far is very flexible. It requires two wrapper elements around all of the body contents. You could get away with just one wrapper element if you didn't need horizontal scrolling, but we recommend using the full "AlertModal" markup as a default.</p>
+	<p>The alert modal we've been using thus far is very flexible. It requires two wrapper elements inside. You could get away with just one wrapper element if you didn't need horizontal scrolling, but we recommend using the full "AlertModal" markup as the base for all of your alert/window style modals.</p>
+	
+	<!-- TODO - fix/change/remove this suggestion -->
 	<p>We recommend copying the <code>.AlertModal*</code> styles from <a href="./style.css">style.css</a>, and pasting into your own stylesheet. There are comments in the styles indicating the properties you may want to change/override.</p>
 	<button type="button" onclick="openModal('alert.html');">
 		Open Alert Modal</button>

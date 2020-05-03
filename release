@@ -8,7 +8,8 @@ version_arg=$1
 ./stage || exit 1;
 
 # Tell npm to bump version in package.json, commit change, get new version
-version=$(npm version $version_arg) || exit 1;
+# TODO - remove git-tag-version (re-enable)
+version=$(npm version --git-tag-version=false $version_arg) || exit 1;
 
 # prepend license comment to dist code
 message="/*! 
@@ -18,14 +19,14 @@ message="/*!
 */
 "
 
-rm -r dist
-mkdir dist
-echo "$message" | cat - staging/openModal/openModal.js > dist/openModal-${verion}.js
-echo "$message" | cat - staging/openModal/modalUtils.js > dist/modalUtils-${verion}.js
-echo "$message" | cat - staging/openModal/modalUtils.css > dist/modalUtils-${verion}.css
-echo "$message" | cat - staging/openModal/modalUtils.min.css > dist/modalUtils-${verion}.min.css
+rm -r openModal
+mkdir openModal
+echo "$message" | cat - staging/openModal/openModal.js > openModal/openModal-${version}.js
+echo "$message" | cat - staging/openModal/modalUtils.js > openModal/modalUtils-${version}.js
+echo "$message" | cat - staging/openModal/modalUtils.css > openModal/modalUtils-${version}.css
+echo "$message" | cat - staging/openModal/modalUtils.min.css > openModal/modalUtils-${version}.min.css
 
-tar -cxz dist > dist.tar.gz
+tar -czf openModal.tar.gz openModal
 
 # npm publish
 # git push
