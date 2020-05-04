@@ -1,21 +1,9 @@
 <!DOCTYPE html>
-<html 
-	class="AlertModal"
->
-
+<html class="AlertModal">
 <link rel="stylesheet" href="./style.css">
-<script type="module" src="/openModal/modalUtils.js"></script>
-<script nomodule defer src="/openModal/modalUtils.js"></script>
-
-<script>
-	addEventListener('load', function() {
-		modalUtils.easyExit(document.body.firstElementChild);
-	});
-</script>
-
 <title>Alert Modal</title>
 <body>
-<div class="AlertModalScroller" mu-easy-exit-root>
+<div class="AlertModalScroller">
 <div class="AlertModalScrollerInner">
 	<h1>Alert Window</h1>
 	<p>Note that:</p>
@@ -29,7 +17,7 @@
 		<li>the "window" scrolls if necessary (both horizontally and vertically)</li>
 	</ul>
 	<p>
-		<button onclick="closeModal();" autofocus>Close</button>
+		<button onclick="modalClose();" autofocus>Close</button>
 	</p>
 </div>
 </div>

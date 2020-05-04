@@ -1,5 +1,5 @@
 /*
-	AlertModal
+	alertModal.css
 	Implements a "window" which:
 		- is centered horizontally in the viewport
 		- grows as needed to fit content
@@ -8,16 +8,19 @@
 		- scrolls within the window, 
 			rather than moving the entire window in the viewport
 
+	Requires to divs wrapping all content of the body
+
 	Most styles should not be overridden, except where indicated.
 */
-.AlertModal {
+html {
 	height: 100%;
 	display: flex;
 	justify-content: center;
-	/* set center if you want the window vertically centered */
 	align-items: flex-start;
+	/* Use this instead if you want to center the window vertically */
+	/*align-items: center;*/
 }
-.AlertModal > body {
+body {
 	/* 
 		sets minimum gap between the "Alert Window" and the viewport boundary 
 		feel free to override
@@ -32,8 +35,8 @@
 	display: flex;
 	flex-direction: column;
 }
-/* sole direct child of body */
-.AlertModalScroller {
+/* This element implements the scrolling mechanism and border */
+body > div {
 	/*
 		Feel free to override any of these
 	*/
@@ -66,8 +69,8 @@
 	flex-direction: column;
 	align-items: flex-start;
 }
-/* sole direct child of AlertModalScroller */
-.AlertModalScrollerInner {
+/* This element implements horizontal padding within the scroller */
+body > div > div {
 	/* 
 		margin-right will work if the parent does not have overflow,
 		it will do NOTHING if the parent does have overflow
@@ -91,18 +94,22 @@
 }
 
 /* 
-	Add to .AlertModal for something in between vertically-centered and fixed at the top
+	Add this class to <html> to get a window which is in between vertically-centered and fixed at the top
 */
-.AlertModalTopBiased {
+.alertModalTopBiased {
 	align-items: stretch;
 }
-.AlertModalTopBiased>body:before {
+.alertModalTopBiased>body:before {
 	content: ' ';
 	display: block;
 	flex-grow: 1;
 }
-.AlertModalTopBiased>body:after {
+.alertModalTopBiased>body:after {
 	content: ' ';
 	display: block;
+	/* 
+		If this was set to 1, the window would always be centered vertically 
+		If it was infinite, the window would be fixed to top of viewport, regardless of height
+	*/
 	flex-grow: 4;
 }

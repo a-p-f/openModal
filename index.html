@@ -2,68 +2,61 @@
 <html>
 <head>
 	<title>openModal Demo</title>
-	<script defer src="/openModal/openModal.js"></script>
+	<script defer src="openModal.js"></script>
 	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-	<h1>openModal - Dead Simple Iframe Based Modal Dialogs</h1>
-	<h2>Concept</h2>
-	<p><code>openModal()</code> works much like <code>window.open()</code>. Instead of a native OS level window, however, it creates a full-page, modal iframe.</p>
-	<p><code>openModal()</code> is infinitely nestable - any iframe can open another.</p>
-	<p>Even though each iframe covers the entire viewport, it need not be fully opaque. Each iframe's document can decide:
-	</p>
-	<ul>
-		<li>whether to cover the entire viewport with visible content</li>
-		<li>whether to render a backdrop</li>
-	</ul>
-	<p>Each iframe can implement it's own:</p>
-	<ul>
-		<li>entrance/exit animations</li>
-		<li>user interactions like drag/resize/snap to edges</li>
-	</ul>
-	<p>With this approach, you can easily create <strong>resuable, self-contained, cooperative, lazy loading</strong> widgets/user interfaces.</p>
-
-	<h2>Installation</h2>
-	<p>Get the latest distribution: <br><code>
-		curl -O ... && tar -xf openModal.tar.gz && rm openModal.tar.gz
-	</code></p>
-	<p>Or get the whole package from npm: <br>
-		<code>npm install openmodal</code></p>
-
+	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
 	<h2>API</h2>
+	<p><code>openModal(url)</code> creates a "ModalWindow" object, from the document at the specified url.</p>
 
-	<h3><code>openModal(url [, onload] [, onclose]) -> iframe</code></h3>
-	<p>Create an iframe with <code>src</code> set to <code>url</code>, and position it such that it covers the entire viewport. Return the iframe.</p>
-	<p><code>onload</code> will be called every time the iframe loads a new page, with the iframe as the sole argument. Use this callback to setup or initialize the child window.</p>
-	<p><code>onclose</code> will be called when the iframe is removed via <code>closeModal([value])</code>. Any value passed to <code>closeModal</code> will be passed on to <code>onclose</code>. This callback isn't strictly necessary (you can setup two way communication using <code>onload</code>), but is a convenient way to pass information back from the child window to the parent.</p>
+	<p>The ModalWindow:</p>
+	<ul>
+		<li>blocks all user interaction in the parent window until closed</li>
+		<li>covers the entire viewport</li>
+		<li>has a transparent background, so need not <em>visually</em> block the entire parent window</li>
+	</ul>
 
-	<h3><code>closeModal([value])</code></h3>
-	<p>Remove the iframe modal from the DOM, and invoke any <code>onclose</code> callback that was passed to <code>openModal</code>.</p>
-	<p>This function is made available globally as a property of the iframe's <code>contentWindow</code>, and as a property on the iframe element (so either the parent window or the child window can dismiss the child).</p>
+	<p>The ModalWindow implements:</p>
+	<dl>
+		<dt><code>contentWindow</code></dt>
+		<dd>A Window object. This allows you to communicate with the modal.</dd>
 
-	<h3>Demo</h3>
+		<dt><code>addEventListener/removeEventListener</code></dt>
+		<dd>You can listen to "load" and "close" events. The load event is fired on every page load within the modal. The close event is fired when the ModalWindow is closed.</dd>
+
+		<dt><code>close([value]) -> undefined</code></dt>
+		<dd>Closes the ModalWindow. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
+	</dl>
+
+	<p>Inside the modal (inside it's <code>contentWindow</code>), the following will be available:</p>
+	<dl>
+		<dt><code>modalParent</code></dt>
+		<dd>The opening/parent Window.</dd>
+		<dt><code>modalClose([value]) -> undefined</code></dt>
+		<dd>Allows the modal to close itself. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
+	</dl>
+
 	<p>The button below demonstrates all the features of the API. You can inspect it to see what the click handler does.</p>
 	<button onclick="
-		var iframe = openModal('communication_demo.html', function(iframe) {
-			iframe.contentWindow.initialize(5);
-		}, function(value) {
-			alert('the child window closed with value '+value);
+		var mw = openModal('communication_demo.html');
+		mw.addEventListener('load', function() {
+			mw.contentWindow.initialize(5);
+		})
+		mw.addEventListener('close', function(e) {
+			alert('the modal window closed with value '+e.detail);
 		});
 
-		// you shouldn't often need to do much with the iframe,
-		// but you might want to set a backgroundColor
-		iframe.style.backgroundColor = '#DFD';
-
-		// you can close the iframe yourself
+		// you can close the ModalWindow yourself
 		setTimeout(function() {
-			if (!iframe.parentElement) {
-				// The iframe already closed itself
-				return
+			try {
+				mw.close('baz');
 			}
-			iframe.closeModal('baz');
+			catch(e) {
+				// the ModalWindow closed itself
+			} 
 		}, 10000);
 	">Demonstrate the API</button>
-
 
 	<h2>Accessibility / Usability Features</h2>
 	<button type="button" onclick="openModal('basic_features.html');">
@@ -75,6 +68,17 @@
 	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
 	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo.</p>
 	<button type="button" onclick="openModal('nestable_alert.html');">Show Me The Nesting</button>
+
+	<h2>Going Native</h2>
+	- no recursive url prevention
+	- no z-index issues
+	- standardize the design pattern
+	- target=_modal
+	- user reload reloads top-most
+	- user back/forward navigate top-most, if possible
+	- independent layers (if A opens B and does not add any event listeners):
+		A opens B -> back will pop B, forward will push it again
+		A can location.reload() UNDERNEATH B
 
 	<h2>Tips/Patterns &amp; modalUtils</h2>
 	<p>You already know everything there is to know about <code>openModal()</code>. Along with openModal.js, we also distribute modalUtils.js and modalUtils.css. These helper utilities help you implement common modal features/layouts. Note that your base page doesn't need to include modalUtils (css or js) - only your modal pages. You may find modalUtils useful even without openModal. Finally, you can use modalUtils.css directly, but you might also want to copy/paste the styles into your own stylesheet and modify as needed. We include an un-minified version in our distribution code, with lots of comments about the styles you may want to override/change.</p>
@@ -113,6 +117,8 @@
 		Initial Dimensions</button>
 
 	<h2>TODO</h2>
+	<p>Max possible z-index? no reason for ayone, ever to appear above <br>
+	2147483647 https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index</p>
 	<h3>Modal Utils</h3>
 	<p>Create modal_utils.js and modal_utils.css. Move .AlertModal there. Create js helpers for draggable windows, edge snapping, etc. Move "easy exit" feature there, too.</p>
 
@@ -121,7 +127,7 @@
 	<ul>
 		<li>the iframe's document must also include openModal.js</li>
 		<li>any inter-window communication you perform in <code>onload</code> must be limited to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">postMessage API</a></li>
-		<li>any value passed to <code>closeModal()</code> must serializable by the postMessage API</li>
+		<li>any value passed to <code>modalClose()</code> must serializable by the postMessage API</li>
 	</ul>
 
 	<h3>Cross Browser Testing</h3>

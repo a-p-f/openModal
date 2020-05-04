@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html class="AlertModal">
-<link rel="stylesheet" href="./style.css">
+<html>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="alertModal.css">
 <title>Standard Features</title>
 <body>
 <div class="AlertModalScroller">
@@ -19,10 +20,10 @@
 		<li>The iframe has <code>aria-modal="true"</code>, which informs assistive technologies that elements in the parent window are not currently interactive. Vimium, for example, generates no "hints" for elements in the parent window.</li>
 		<li>the close button below auto-focuses (because we added the <code>autofocus</code> attribute)</li>
 		<li><button onclick="location.reload();">Clicking this button</button> will reload this iframe, and the close button will focus again</li>
-		<li>openModal.js is NOT included on this page, but <code>closeModal()</code> is still available globally</li>
+		<li>openModal.js is NOT included on this page, but <code>modalClose()</code> is still available globally</li>
 	</ul>
 	<p>
-		<button onclick="closeModal();" autofocus>Close</button>
+		<button onclick="modalClose();" autofocus>Close</button>
 	</p>
 </div>
 </div>
