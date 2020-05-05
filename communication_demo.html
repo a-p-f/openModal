@@ -2,25 +2,32 @@
 <html>
 <link rel="stylesheet" href="alertModal.css">
 <link rel="stylesheet" href="./style.css">
-<title>API Demo</title>
+<title>Communication Demo</title>
 <script>
 	// Will be called by parent window when we load
-	function initialize(value) {
-		document.getElementById('number_input').value = value;
+	function initialize(options) {
+		document.getElementById('number_input').value = options.value;
+		window.oncancel = options.oncancel;
 	}
 </script>
 <body>
 <!-- alerModal.css required wrappers -->
 <div><div>
-	<h1>API Demo</h1>
-	<p>Note - the parent window will remove this iframe automatically in 10 seconds. Try completing the form below once, and then re-open this modal and let the parent close it.</p>
+	<h1>Communication Demo</h1>
+
+	<p>Notice that:</p>
+	<ul>
+		<li>the Cancel button will communicate with the parent window, which will close this modal</li>
+		<li>openModal.js is NOT included on this page, but <code>modalClose()</code> is still available globally (that's how the form submit handler closes this modal)</li>
+	</ul>
 
 	<form onsubmit="modalClose(this.elements.number_input.value);">
 		<p><label>
-			A number: <input type="number" id="number_input" name="number_input" value="">
+			Number to pass to parent: <input type="number" id="number_input" name="number_input" value="">
 		</label></p>
 		<p>
-			<button>Submit</button>
+			<button type="submit">Submit</button>
+			<button type="button" onclick="window.oncancel()">Cancel</button>
 		</p>
 	</form>
 </div></div>

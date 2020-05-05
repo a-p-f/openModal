@@ -8,6 +8,9 @@ body {
 h2 {
 	border-bottom: 1px solid #aaa;
 }
+h3 {
+	margin: 1rem 0;
+}
 dl {
 	margin-left: 1rem;
 }

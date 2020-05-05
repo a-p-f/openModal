@@ -8,6 +8,10 @@
 <body>
 	<strong>UNDER CONSTRUCTION</strong>
 	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
+	<p><a href="openModal.js">openModal.js</a> allows you to easily create accessible, nestable, modal dialogs/windows.</p>
+	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "ModalWindow" over top of your existing page.</p>
+	<p>Our implementation loads the the document in an iframe, but this detail is not exposed in the API. We've designed the API to be as simple as possible, and to mimic existing browser APIs, in the hopes that this function might one day be considered for native browser implementation.</p>
+
 	<h2>API</h2>
 	<p><code>openModal(url)</code> creates a "ModalWindow" object, from the document at the specified url.</p>
 
@@ -38,37 +42,39 @@
 		<dd>Allows the modal to close itself. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
 	</dl>
 
-	<p>The button below demonstrates all the features of the API. You can inspect it to see what the click handler does.</p>
-	<button onclick="
-		var mw = openModal('communication_demo.html');
-		mw.addEventListener('load', function() {
-			mw.contentWindow.initialize(5);
-		})
-		mw.addEventListener('close', function(e) {
-			alert('the modal window closed with value '+e.detail);
-		});
+	<h2 id="demos">Demos</h2>
+	<p>
+		<button type="button" onclick="openModal('basic_features.html');">
+			Accessibility / Usability Features</button>
+		<button onclick="
+			var mw = openModal('communication_demo.html');
+			mw.addEventListener('load', function() {
+				mw.contentWindow.initialize({
+					value: 5,
+					oncancel: function() {
+						mw.close('NO VALUE');
+					},
+				});
+			})
+			mw.addEventListener('close', function(e) {
+				alert('the modal window closed with value '+e.detail);
+			});
+		">Inter-window Communication</button>
 
-		// you can close the ModalWindow yourself
-		setTimeout(function() {
-			try {
-				mw.close('baz');
-			}
-			catch(e) {
-				// the ModalWindow closed itself
-			} 
-		}, 10000);
-	">Demonstrate the API</button>
+		<button type="button" onclick="openModal('nestable_alert.html');">Nesting</button>
 
-	<h2>Accessibility / Usability Features</h2>
-	<button type="button" onclick="openModal('basic_features.html');">
-		Show Me The Features</button>
-	<button id="alert_something" onclick="alert('You clicked the test button');">
-		(Test Button)</button>
+		<!-- 
+			This button is here so that so that the 'basic_features.html' demo
+			has something to try and click (programmatically)
+		-->
+		<br>
 
-	<h2>Nesting</h2>
-	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
-	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo.</p>
-	<button type="button" onclick="openModal('nestable_alert.html');">Show Me The Nesting</button>
+	</p>
+	<p>
+		Test button for the accessibility demo (it tries to click this): <br>
+		<button id="alert_something" onclick="alert('You clicked the test button');">
+			Test Button</button>
+	</p>
 
 	<h2>Going Native</h2>
 	- no recursive url prevention
@@ -81,15 +87,22 @@
 		A opens B -> back will pop B, forward will push it again
 		A can location.reload() UNDERNEATH B
 
-	<h2>Tips/Patterns &amp; modalUtils</h2>
-	<p>You already know everything there is to know about <code>openModal()</code>. Along with openModal.js, we also distribute modalUtils.js and modalUtils.css. These helper utilities help you implement common modal features/layouts. Note that your base page doesn't need to include modalUtils (css or js) - only your modal pages. You may find modalUtils useful even without openModal. Finally, you can use modalUtils.css directly, but you might also want to copy/paste the styles into your own stylesheet and modify as needed. We include an un-minified version in our distribution code, with lots of comments about the styles you may want to override/change.</p>
+	<h2>Tips &amp; Design Patterns</h2>
+
+	<p>You already know everything there is to know about <code>openModal()</code>. What follows is a set of tips/techniques for implementing common design patterns.</p>
+
+	<h3>Nesting</h3>
+	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
+	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo:<br>
+	<button type="button" onclick="openModal('nestable_alert.html');">Nesting Demo</button>
+	</p>
 
 	<h3>Easy Exit</h3>
 	<p>Close the modal when clicking outside the main "visible element" or by hitting the escape key:<br>
 	<button onclick="openModal('easy_exit.html');">Easy Exit Demo</button>
 
 	<h3>Full-page Layers</h3>
-	<p>If your iframe performs navigation within itself, put a background color on iframe (rather than the html/body element). Otherwise, the parent window will show through during navigations. <br>
+	<p>If your modal window performs navigation within itself, put a background color on iframe (rather than the html/body element). Otherwise, the parent window will show through during navigations. <br>
 	<button type="button" onclick="openModal('full_page.html');">Without iframe background</button>
 	<button type="button" onclick="
 		openModal('full_page.html').style.backgroundColor = 'white';

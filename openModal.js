@@ -25,7 +25,11 @@
 		// Not used by us, but users can use this class if custom styling is required
 		// (ie. set z-index on the iframe)
 		i.classList.add('openModalIframe');
-		i.style = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; margin: 0; padding: 0;';
+		var s = i.style;
+		s.position= 'fixed';
+		s.top = 0;s.left = 0;s.width = '100%';s.height = '100%';
+		s.border = 'none';
+		s.margin = 0; s.padding = 0;
 		// TODO - fallback for browsers not supporting position: fixed (Opera Mini)
 		i.setAttribute('role', 'dialog');
 		// TODO - test with screen reader in Safari, ensure content is accessible
@@ -52,6 +56,7 @@
 			throw new Error('A ModalWindow is already open. A window may only open one ModalWindow at a time.');
 		}
 
+		previousActiveElement = document.activeElement;
 		lockedScrollLeft = document.documentElement.scrollLeft;
 		lockedScrollTop = document.documentElement.scrollTop;
 		addEventListener('scroll', fixScroll);
@@ -90,6 +95,7 @@
 		removeEventListener('scroll', fixScroll);
 		removeEventListener('click', cancel, true);
 		document.body.removeEventListener('focus', refocus_iframe, true); 
+		previousActiveElement && previousActiveElement.focus();
 
 		openIframe.dispatchEvent(new CustomEvent('close', {
 			detail: value,

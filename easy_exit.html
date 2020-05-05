@@ -1,33 +1,29 @@
 <!DOCTYPE html>
 <html 
-	class="AlertModal"
+	onclick="
+		// Close when clicking outside the 'visible window'
+		if(document.body.firstElementChild.contains(event.target)) return
+		modalClose()
+	"
+	onkeydown="
+		// Close when hitting escape
+		if(event.key != 'Escape') return
+		modalClose();
+	"
 >
 
+<link rel="stylesheet" href="alertModal.css">
 <link rel="stylesheet" href="./style.css">
-<script type="module" src="/openModal/modalUtils.js"></script>
-<script nomodule defer src="/openModal/modalUtils.js"></script>
 
-<script>
-	addEventListener('load', function() {
-		modalUtils.easyExit(document.body.firstElementChild);
-	});
-</script>
-
-<title>Alert Modal</title>
+<title>Easy Exit</title>
 <body>
-<div class="AlertModalScroller" mu-easy-exit-root>
-<div class="AlertModalScrollerInner">
-	<h1>Alert Window</h1>
-	<p>Note that:</p>
-	<ul>
-		<li>the background of the iframe is transparent</li>
-		<li>the "window" automatically adjusts size to content</li>
-		<li>
-			the "window" will adjust in size as you resize this textarea: <br>
-			<textarea></textarea>
-		</li>
-		<li>the "window" scrolls if necessary (both horizontally and vertically)</li>
-	</ul>
+<div>
+<div>
+	<h1>Easy Exit</h1>
+	<p>You can close this window by hitting escape, or by clicking outside the visible part of this window.</p>
+	<p>These features are implemented by simple inline event handlers on the html element.</p>
+	<p>Also, note that if any of the following inputs have focus, you have to hit escape twice to close the window.</p>
+	<textarea autofocus></textarea><input type="text" name="">
 	<p>
 		<button onclick="modalClose();" autofocus>Close</button>
 	</p>
