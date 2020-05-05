@@ -13,7 +13,7 @@
 	<p>Our implementation loads the the document in an iframe, but this detail is not exposed in the API. We've designed the API to be as simple as possible, and to mimic existing browser APIs, in the hopes that this function might one day be considered for native browser implementation.</p>
 
 	<h2>API</h2>
-	<p><code>openModal(url)</code> creates a "ModalWindow" object, from the document at the specified url.</p>
+	<p><code>openModal(url, [options])</code> creates a "ModalWindow" object, from the document at the specified url.</p>
 
 	<p>The ModalWindow:</p>
 	<ul>
@@ -41,8 +41,20 @@
 		<dt><code>modalClose([value]) -> undefined</code></dt>
 		<dd>Allows the modal to close itself. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
 	</dl>
+	
+	<p>The <code>options</code> argument, if given, must be an object specifying any of these properties:</p>
+	<dl>
+		<dt><code>background</code></dt>
+		<dd>A string declaring the style of the modal's background. Generally, you can just set the background style on the <code>&lt;html&gt;</code> or <code>&lt;body&gt;</code> element within your modal. However, if the modal performs any navigation within its own <code>contentWindow</code>, you may want to set this value, so that the background persists during navigations. <br>
 
-	<h2 id="demos">Demos</h2>
+		<button type="button" onclick="openModal('full_page.html');">Without background</button>
+		<button type="button" onclick="
+			openModal('full_page.html', {background: 'white'});
+		">With iframe background</button>
+		</dd>
+	</dl>
+
+	<h2 id="demos" style="position: relative; z-index: 9007199254740991;">Demos</h2>
 	<p>
 		<button type="button" onclick="openModal('basic_features.html');">
 			Accessibility / Usability Features</button>
@@ -101,41 +113,40 @@
 	<p>Close the modal when clicking outside the main "visible element" or by hitting the escape key:<br>
 	<button onclick="openModal('easy_exit.html');">Easy Exit Demo</button>
 
-	<h3>Full-page Layers</h3>
-	<p>If your modal window performs navigation within itself, put a background color on iframe (rather than the html/body element). Otherwise, the parent window will show through during navigations. <br>
-	<button type="button" onclick="openModal('full_page.html');">Without iframe background</button>
-	<button type="button" onclick="
-		openModal('full_page.html').style.backgroundColor = 'white';
-	">With iframe background</button>
-
 	<h3>Alert Modal</h3>
-	<p>The alert modal we've been using thus far is very flexible. It requires two wrapper elements inside. You could get away with just one wrapper element if you didn't need horizontal scrolling, but we recommend using the full "AlertModal" markup as the base for all of your alert/window style modals.</p>
+	<p>The alert modal we've been using thus far is very flexible. It requires two wrapper elements inside the body, and you must include <a href="alertModal.css">alertModal.css</a>. Feel free to copy alertModal.css to your own project, and edit to your liking. We've included comments indicating which styles you may want to override.</p>
+	<p>Note that in each of the following demos we actually load the same document, but we mutate the styles within the modal via <code>load</code> listeners. This is for demonstration purposes only. In general, you should leave such styling up to the document you are opening.</p>
 	
-	<!-- TODO - fix/change/remove this suggestion -->
-	<p>We recommend copying the <code>.AlertModal*</code> styles from <a href="./style.css">style.css</a>, and pasting into your own stylesheet. There are comments in the styles indicating the properties you may want to change/override.</p>
 	<button type="button" onclick="openModal('alert.html');">
 		Open Alert Modal</button>
-	<button type="button" onclick="openModal('alert.html', function(iframe) {
-		iframe.contentDocument.documentElement.classList.add('AlertModalTopBiased');
-	});">
+	<button type="button" onclick="
+		var mw = openModal('alert.html');
+		mw.addEventListener('load', function() {
+			mw.contentWindow.document.documentElement.classList.add('alertModalTopBiased');
+		});
+	">
 		"Top Biased" variant</button>
-	<button type="button" onclick="openModal('alert.html', function(iframe) {
-		iframe.contentDocument.documentElement.style.alignItems = 'center';
-	});">
+	<button type="button" onclick="
+		var mw = openModal('alert.html');
+		mw.addEventListener('load', function() {
+			mw.contentWindow.document.documentElement.style.alignItems = 'center';
+		});
+	">
 		Vertically Centered</button>
-	<button type="button" onclick="openModal('alert.html', function(iframe) {
-		var div = iframe.contentDocument.querySelector('.AlertModalScroller');
-		div.style.width = '800px';
-		div.style.height = '500px';
-	});">
+	<button type="button" onclick="
+		var mw = openModal('alert.html');
+		mw.addEventListener('load', function() {
+			var div = mw.contentWindow.document.body.firstElementChild;
+			div.style.width = '800px';
+			div.style.height = '500px';
+		});
+	">
 		Initial Dimensions</button>
 
 	<h2>TODO</h2>
-	<p>Max possible z-index? no reason for ayone, ever to appear above <br>
-	2147483647 https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index</p>
-	<h3>Modal Utils</h3>
-	<p>Create modal_utils.js and modal_utils.css. Move .AlertModal there. Create js helpers for draggable windows, edge snapping, etc. Move "easy exit" feature there, too.</p>
-
+	<h3>More design patterns</h3>
+	<p>Draggable windows, edge snapping, etc.</p>
+	
 	<h3>Cross Origin Iframes</h3>
 	<p>We plan to support cross origin iframes. The following limitations will apply:</p>
 	<ul>

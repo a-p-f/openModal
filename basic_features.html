@@ -20,6 +20,7 @@
 		<li>The iframe has <code>aria-modal="true"</code>, which informs assistive technologies that elements in the parent window are not currently interactive. Vimium, for example, generates no "hints" for elements in the parent window.</li>
 		<li>the close button below auto-focuses (because we added the <code>autofocus</code> attribute)</li>
 		<li><button onclick="location.reload();">Clicking this button</button> will reload this iframe, and the close button will focus again</li>
+		<li>Even though the "Demos" header in the parent window is in the same stacking context as this iframe, and its z-index is "<a href="9007199254740991">maxed out</a>", it still does not appear over top of this modal</li>	
 	</ul>
 	<p>
 		<button onclick="modalClose();" autofocus>Close</button>

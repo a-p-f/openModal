@@ -22,14 +22,17 @@
 
 	function createIframe() {
 		var i = document.createElement('iframe');
-		// Not used by us, but users can use this class if custom styling is required
-		// (ie. set z-index on the iframe)
-		i.classList.add('openModalIframe');
 		var s = i.style;
 		s.position= 'fixed';
 		s.top = 0;s.left = 0;s.width = '100%';s.height = '100%';
 		s.border = 'none';
 		s.margin = 0; s.padding = 0;
+		// This is MAX_SAFE_INTEGER in JS
+		// This is larger than the maximum supported z-index in any current browser
+		// All modern browsers treat this as equivalent to the maximum possible z-index
+		// TODO - test
+		s.zIndex = 9007199254740991;
+
 		// TODO - fallback for browsers not supporting position: fixed (Opera Mini)
 		i.setAttribute('role', 'dialog');
 		// TODO - test with screen reader in Safari, ensure content is accessible
@@ -51,10 +54,11 @@
 	function refocus_iframe() {
 		if (document.activeElement != openIframe) openIframe.focus();
 	}
-	function openModal(url) {
+	function openModal(url, options) {
 		if (openIframe) {
 			throw new Error('A ModalWindow is already open. A window may only open one ModalWindow at a time.');
 		}
+		options = options || {};
 
 		previousActiveElement = document.activeElement;
 		lockedScrollLeft = document.documentElement.scrollLeft;
@@ -64,6 +68,9 @@
 		document.body.addEventListener('focus', refocus_iframe, true);
 
 		var iframe = createIframe();
+		if (options.background) {
+			iframe.style.background = options.background;
+		}
 		iframe.addEventListener('load', function(e) {
 			/*
 				TODO - support cross origin modal windows
