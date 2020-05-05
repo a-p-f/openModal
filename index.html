@@ -89,15 +89,23 @@
 	</p>
 
 	<h2>Going Native</h2>
-	- no recursive url prevention
-	- no z-index issues
-	- standardize the design pattern
-	- target=_modal
-	- user reload reloads top-most
-	- user back/forward navigate top-most, if possible
-	- independent layers (if A opens B and does not add any event listeners):
-		A opens B -> back will pop B, forward will push it again
-		A can location.reload() UNDERNEATH B
+	If a native implementation of <code>openModal()</code> was implemented, some additional features could be added (<small>some or all of these features <em>may</em> be possible with a pure javascript solution, but the implementations would likely be hacks that fail in various edge cases)</small>).
+
+	<h3><code>target="_modal"</code></h3>
+	<p>Any link with this target will open the linked document in a modal window.</p>
+
+	<h3>Top Reload</h3>
+	<p>Any user-initiated reload would only reload the top-most window.</p>
+
+	<h3>"Independent" Windows</h3>
+	<p>If window A opens ModalWindow B, then A and B are said to be <dfn>independent</dfn> until A adds any event listeners to B.</p>
+	<p>Some additional features could be added which are only supported for independent windows.</p>
+	<h4>Bottom Reload</h4>
+	<p>If window A is covered by (independent) window B, and window A executes <code>location.reload()</code>, then A will reload and B will remain open.</p>
+	<p>This is useful, for example, if A is a "detail" view and B is a form to edit the object shown in A. B can communicate with A (ie. via <code>window.parent.someGlobalCallback()</code>) whenever the user commits a change, and A can then reload so that it reflects those changes. Or, in a situation this simple, B could directly call <code>window.parent.location.reload()</code> to reload A every time the user commits a change.</p>
+
+	<h4>History Navigation</h4>
+	<p>Opening an independent modal should create a new history state. If the user goes "back", the modal should be closed (assuming it cannot go back any further in its own history). The user should then be able to go "forward" to reopen the modal.</p>
 
 	<h2>Tips &amp; Design Patterns</h2>
 
