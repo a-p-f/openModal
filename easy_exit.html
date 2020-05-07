@@ -3,12 +3,12 @@
 	onclick="
 		// Close when clicking outside the 'visible window'
 		if(document.body.firstElementChild.contains(event.target)) return
-		modalClose()
+		closeModal()
 	"
 	onkeydown="
 		// Close when hitting escape
 		if(event.key != 'Escape') return
-		modalClose();
+		closeModal();
 	"
 >
 
@@ -25,7 +25,7 @@
 	<p>Also, note that if any of the following inputs have focus, you have to hit escape twice to close the window.</p>
 	<textarea autofocus></textarea><input type="text" name="">
 	<p>
-		<button onclick="modalClose();" autofocus>Close</button>
+		<button onclick="closeModal();" autofocus>Close</button>
 	</p>
 </div>
 </div>

@@ -76,21 +76,16 @@
 				TODO - support cross origin modal windows
 				They will also need to include this script, and we'll have to use postMessage API
 			*/
-			iframe.contentWindow.modalParent = window;
-			iframe.contentWindow.modalClose = closeModal;
+			iframe.contentWindow.closeModal = closeModal;
 			
 			var ft = iframe.contentDocument.querySelector('[autofocus]');
 			ft && ft.focus();
 			iframe.setAttribute('aria-label', iframe.contentDocument.title);
+
+			options.onload && options.onload(irame.contentWindow);
 		});
 		iframe.src = url;
 		openIframe = iframe;
-		return {
-			contentWindow: iframe.contentWindow,
-			addEventListener: iframe.addEventListener.bind(iframe),
-			removeEventListener: iframe.removeEventListener.bind(iframe),
-			close: closeModal,
-		}
 	}
 	function closeModal(value) {
 		if (!openIframe) {

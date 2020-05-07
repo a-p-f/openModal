@@ -18,10 +18,10 @@
 	<p>Notice that:</p>
 	<ul>
 		<li>the Cancel button will communicate with the parent window, which will close this modal</li>
-		<li>openModal.js is NOT included on this page, but <code>modalClose()</code> is still available globally (that's how the form submit handler closes this modal)</li>
+		<li>openModal.js is NOT included on this page, but <code>closeModal()</code> is still available globally (that's how the form submit handler closes this modal)</li>
 	</ul>
 
-	<form onsubmit="modalClose(this.elements.number_input.value);">
+	<form onsubmit="closeModal(this.elements.number_input.value);">
 		<p><label>
 			Number to pass to parent: <input type="number" id="number_input" name="number_input" value="">
 		</label></p>

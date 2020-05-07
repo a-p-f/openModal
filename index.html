@@ -36,9 +36,9 @@
 
 	<p>Inside the modal (inside it's <code>contentWindow</code>), the following will be available:</p>
 	<dl>
-		<dt><code>modalParent</code></dt>
+		<dt><code>parent</code></dt>
 		<dd>The opening/parent Window.</dd>
-		<dt><code>modalClose([value]) -> undefined</code></dt>
+		<dt><code>closeModal([value]) -> undefined</code></dt>
 		<dd>Allows the modal to close itself. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
 	</dl>
 	
@@ -160,7 +160,7 @@
 	<ul>
 		<li>the iframe's document must also include openModal.js</li>
 		<li>any inter-window communication you perform in <code>onload</code> must be limited to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">postMessage API</a></li>
-		<li>any value passed to <code>modalClose()</code> must serializable by the postMessage API</li>
+		<li>any value passed to <code>closeModal()</code> must serializable by the postMessage API</li>
 	</ul>
 
 	<h3>Cross Browser Testing</h3>
