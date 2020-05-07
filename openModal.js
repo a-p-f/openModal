@@ -16,7 +16,8 @@
 (function() {
 	'use strict';
 
-	var openIframe;
+	var iframe;
+	var onclose;
 	var lockedScrollTop, lockedScrollLeft;
 	var previousActiveElement;
 
@@ -52,14 +53,15 @@
 		event.preventDefault();
 	}
 	function refocus_iframe() {
-		if (document.activeElement != openIframe) openIframe.focus();
+		if (document.activeElement != iframe) iframe.focus();
 	}
 	function openModal(url, options) {
-		if (openIframe) {
+		if (iframe) {
 			throw new Error('A ModalWindow is already open. A window may only open one ModalWindow at a time.');
 		}
 		options = options || {};
 
+		onclose = options.onclose || null;
 		previousActiveElement = document.activeElement;
 		lockedScrollLeft = document.documentElement.scrollLeft;
 		lockedScrollTop = document.documentElement.scrollTop;
@@ -67,7 +69,7 @@
 		addEventListener('click', cancel, true);
 		document.body.addEventListener('focus', refocus_iframe, true);
 
-		var iframe = createIframe();
+		iframe = createIframe();
 		if (options.background) {
 			iframe.style.background = options.background;
 		}
@@ -82,28 +84,26 @@
 			ft && ft.focus();
 			iframe.setAttribute('aria-label', iframe.contentDocument.title);
 
-			options.onload && options.onload(irame.contentWindow);
+			options.onload && options.onload(iframe.contentWindow);
 		});
 		iframe.src = url;
-		openIframe = iframe;
 	}
 	function closeModal(value) {
-		if (!openIframe) {
+		if (!iframe) {
 			throw new Error('No ModalWindow is currently open.');
 		}
 
-		openIframe.parentElement.removeChild(openIframe);
+		iframe.parentElement.removeChild(iframe);
 
 		removeEventListener('scroll', fixScroll);
 		removeEventListener('click', cancel, true);
 		document.body.removeEventListener('focus', refocus_iframe, true); 
 		previousActiveElement && previousActiveElement.focus();
 
-		openIframe.dispatchEvent(new CustomEvent('close', {
-			detail: value,
-		}));
+		onclose && onclose(value);
 
-		openIframe = null;
+		iframe = null;
+		onclose = null;
 	}
 
 	window.openModal = openModal;

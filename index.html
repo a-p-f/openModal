@@ -59,17 +59,13 @@
 		<button type="button" onclick="openModal('basic_features.html');">
 			Accessibility / Usability Features</button>
 		<button onclick="
-			var mw = openModal('communication_demo.html');
-			mw.addEventListener('load', function() {
-				mw.contentWindow.initialize({
-					value: 5,
-					oncancel: function() {
-						mw.close('NO VALUE');
-					},
-				});
-			})
-			mw.addEventListener('close', function(e) {
-				alert('the modal window closed with value '+e.detail);
+			openModal('communication_demo.html', {
+				onload: function(w) {
+					w.initialize(5);
+				},
+				onclose: function(value) {
+					alert('The modal window closed with value '+value);
+				},
 			});
 		">Inter-window Communication</button>
 

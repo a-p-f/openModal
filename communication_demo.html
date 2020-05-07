@@ -5,9 +5,8 @@
 <title>Communication Demo</title>
 <script>
 	// Will be called by parent window when we load
-	function initialize(options) {
-		document.getElementById('number_input').value = options.value;
-		window.oncancel = options.oncancel;
+	function initialize(value) {
+		document.getElementById('number_input').value = value;
 	}
 </script>
 <body>
@@ -27,7 +26,6 @@
 		</label></p>
 		<p>
 			<button type="submit">Submit</button>
-			<button type="button" onclick="window.oncancel()">Cancel</button>
 		</p>
 	</form>
 </div></div>
