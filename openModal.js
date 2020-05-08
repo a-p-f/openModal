@@ -57,7 +57,7 @@
 	}
 	function openModal(url, options) {
 		if (iframe) {
-			throw new Error('A ModalWindow is already open. A window may only open one ModalWindow at a time.');
+			throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 		}
 		options = options || {};
 
@@ -74,21 +74,30 @@
 			iframe.style.background = options.background;
 		}
 		iframe.addEventListener('load', function(e) {
+			var iw = iframe.contentWindow;
 			/*
 				TODO - support cross origin modal windows
 				They will also need to include this script, and we'll have to use postMessage API
 			*/
-			iframe.contentWindow.closeModal = closeModal;
+
+			/*
+				Important - we do not reference closeModalChild here directly, but window.closeModalChild.
+
+				This provides "wrapper libraries" an opportunity to extend the functionality of window.closeModalChild.
+
+				See, for example, what we do in openModalWithHistory
+			*/
+			iw.closeModal = window.closeModalChild;
 			
-			var ft = iframe.contentDocument.querySelector('[autofocus]');
+			var ft = iw.document.querySelector('[autofocus]');
 			ft && ft.focus();
 			iframe.setAttribute('aria-label', iframe.contentDocument.title);
 
-			options.onload && options.onload(iframe.contentWindow);
+			options.onload && options.onload(iw);
 		});
 		iframe.src = url;
 	}
-	function closeModal(value) {
+	function closeModalChild(value) {
 		if (!iframe) {
 			throw new Error('No ModalWindow is currently open.');
 		}
@@ -107,4 +116,11 @@
 	}
 
 	window.openModal = openModal;
+	/*
+		Users are unlikely to need to call this.
+		The modal window should dismiss itself via window.close().
+
+		The main reason we make this available is so that we can create other libraries which modify this function, extending the behaviour of openModal().
+	*/
+	window.closeModalChild = closeModalChild;
 })();

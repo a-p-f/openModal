@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html style="background-color: white;">
+<head>
+	<title>Modal With History</title>
+	<style>
+		a {
+			padding: 0.5rem;
+		}
+		:target {
+			background-color: yellow;
+		}
+	</style>
+</head>
+<body>
+	<p>You should be able to close this modal using the back button.</p>
+	<p>You should also be able to use the close button, to close it explicitly.</p>
+	<p><a id="A" href="?A#A">Page A</a></p>
+	<p><a id="B" href="?B#B">Page B</a></p>
+	<p><button onclick="window.close();">Close</button></p>
+</body>
+</html>
