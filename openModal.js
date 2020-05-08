@@ -90,7 +90,14 @@
 			iw.closeModal = window.closeModalChild;
 			
 			var ft = iw.document.querySelector('[autofocus]');
-			ft && ft.focus();
+			if (ft) {
+				ft.focus();
+			}
+			else {
+				// Note - we need to explicitly set tabindex to -1 on body in order to focus it
+				iw.document.body.tabIndex = -1;
+				iw.document.body.focus();
+			}
 			iframe.setAttribute('aria-label', iframe.contentDocument.title);
 
 			options.onload && options.onload(iw);

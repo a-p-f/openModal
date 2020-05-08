@@ -9,79 +9,74 @@
 	<strong>UNDER CONSTRUCTION</strong>
 	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
 	<p><a href="openModal.js">openModal.js</a> allows you to easily create accessible, nestable, modal dialogs/windows.</p>
-	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "ModalWindow" over top of your existing page.</p>
-	<p>Our implementation loads the the document in an iframe, but this detail is not exposed in the API. We've designed the API to be as simple as possible, and to mimic existing browser APIs, in the hopes that this function might one day be considered for native browser implementation.</p>
+	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "modal window" over top of your existing page.</p>
+	<p>The modal window has a transparent background, so the document loaded in that window is free to let the parent window show through. All user interaction in the parent window is blocked until the modal window is closed.</p>
+	<p>
+		<button onclick="openModal('basic_features.html')">Try it out</button>
+		<button 
+			id="alert_something" 
+			onclick="alert('This button is a dummy element, which we try to click with javascript from the demo modal. This alert message should NOT appear when you click the test button in the modal window');"
+			style="opacity: 0.5;"
+		>
+			Test Button
+		</button>
+		<br>
+
+		<button onclick="openModal('no_autofocus.html');">
+			Try it out (no <code>autofocus</code> element)
+		</button>
+	</p>
+
+	<p>Our implementation loads the the document in an iframe, but this detail is not exposed in the API. We've designed the API to be as simple as possible, serving one well-defined role. Our hope is that this API may be considered for native implementation on the web.</p>
 
 	<h2>API</h2>
-	<p><code>openModal(url, [options])</code> creates a "ModalWindow" object, from the document at the specified url.</p>
+	<h3><code>openModal(url, [options]) -> undefined</code></h3>
+	<p>Opens a "modal window" over top of the current window, containing the document at the specified url.</p>
 
-	<p>The ModalWindow:</p>
-	<ul>
-		<li>blocks all user interaction in the parent window until closed</li>
-		<li>covers the entire viewport</li>
-		<li>has a transparent background, so need not <em>visually</em> block the entire parent window</li>
-	</ul>
-
-	<p>The ModalWindow implements:</p>
-	<dl>
-		<dt><code>contentWindow</code></dt>
-		<dd>A Window object. This allows you to communicate with the modal.</dd>
-
-		<dt><code>addEventListener/removeEventListener</code></dt>
-		<dd>You can listen to "load" and "close" events. The load event is fired on every page load within the modal. The close event is fired when the ModalWindow is closed.</dd>
-
-		<dt><code>close([value]) -> undefined</code></dt>
-		<dd>Closes the ModalWindow. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
-	</dl>
-
-	<p>Inside the modal (inside it's <code>contentWindow</code>), the following will be available:</p>
-	<dl>
-		<dt><code>parent</code></dt>
-		<dd>The opening/parent Window.</dd>
-		<dt><code>closeModal([value]) -> undefined</code></dt>
-		<dd>Allows the modal to close itself. If given, <code>value</code> will be available on the close event as <code>event.detail</code></dd>
-	</dl>
-	
 	<p>The <code>options</code> argument, if given, must be an object specifying any of these properties:</p>
 	<dl>
-		<dt><code>background</code></dt>
-		<dd>A string declaring the style of the modal's background. Generally, you can just set the background style on the <code>&lt;html&gt;</code> or <code>&lt;body&gt;</code> element within your modal. However, if the modal performs any navigation within its own <code>contentWindow</code>, you may want to set this value, so that the background persists during navigations. <br>
+		<dt><code>background: string</code></dt>
+		<dd>A style to use as the modal's background. Generally, you can just set the background style on the <code>&lt;html&gt;</code> or <code>&lt;body&gt;</code> element within your modal. However, if the modal window performs any navigation within itself, you may want to set this value, so that the background persists during navigations. <br>
 
 		<button type="button" onclick="openModal('full_page.html');">Without background</button>
 		<button type="button" onclick="
 			openModal('full_page.html', {background: 'white'});
 		">With iframe background</button>
 		</dd>
-	</dl>
 
-	<h2 id="demos" style="position: relative; z-index: 9007199254740991;">Demos</h2>
-	<p>
-		<button type="button" onclick="openModal('basic_features.html');">
-			Accessibility / Usability Features</button>
+		<dt><code>onload: function(window) -> undefined</code></dt>
+		<dd>
+			This callback will be invoked every time the modal window loads. <br>
+			<button onclick="
+				openModal('onload_test.html', {onload: function(w) {
+					w.initialize('foobar');
+				}});
+			">Try it out</button>
+		</dd>
+
+		<dt><code>onclose: function(any) -> undefined</code></dt>
+		<dd>This callback will be invoked when the modal is closed. The argument will the value that was passed to <code>closeModal()</code>. <br>
 		<button onclick="
-			openModal('communication_demo.html', {
-				onload: function(w) {
-					w.initialize(5);
-				},
+			openModal('onclose_test.html', {
 				onclose: function(value) {
 					alert('The modal window closed with value '+value);
 				},
-			});
-		">Inter-window Communication</button>
+			});">Try it out</button>
+		</dd>
+	</dl>
 
-		<button type="button" onclick="openModal('nestable_alert.html');">Nesting</button>
+	<p>Inside the modal window, the following will be available:</p>
+	<dl>
+		<dt><code>parent</code></dt>
+		<dd>The parent window (which called <code>openModal()</code>). The modal window can also navigate the parent using links with <code>target="_parent"</code>.<br> <small>These are standard features available in any iframe, but we explicitly endorse their use. We suggest that any native implementation of <code>openModal()</code> should also make these features available, even if that implementation does not use iframes.</small></dd>
+		<dt><code>closeModal([value]) -> undefined</code></dt>
+		<dd>Closes the modal window. If given, <code>value</code> will be passed to the <code>onclose</code> callback</dd>
+	</dl>
 
-		<!-- 
-			This button is here so that so that the 'basic_features.html' demo
-			has something to try and click (programmatically)
-		-->
-		<br>
-
-	</p>
-	<p>
-		Test button for the accessibility demo (it tries to click this): <br>
-		<button id="alert_something" onclick="alert('You clicked the test button');">
-			Test Button</button>
+	<h2>Nesting</h2>
+	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
+	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo:<br>
+	<button type="button" onclick="openModal('nestable_alert.html');">Nesting Demo</button>
 	</p>
 
 	<h2>Going Native</h2>
@@ -107,11 +102,6 @@
 
 	<p>You already know everything there is to know about <code>openModal()</code>. What follows is a set of tips/techniques for implementing common design patterns.</p>
 
-	<h3>Nesting</h3>
-	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
-	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo:<br>
-	<button type="button" onclick="openModal('nestable_alert.html');">Nesting Demo</button>
-	</p>
 
 	<h3>Easy Exit</h3>
 	<p>Close the modal when clicking outside the main "visible element" or by hitting the escape key:<br>

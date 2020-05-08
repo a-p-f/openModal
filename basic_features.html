@@ -4,9 +4,23 @@
 <link rel="stylesheet" href="alertModal.css">
 <title>Standard Features</title>
 <body>
-<div class="AlertModalScroller">
-<div class="AlertModalScrollerInner" style="width: 500px;">
-	<h1>Standard Features:</h1>
+<!-- alertModal.css required wrappers -->
+<div><div style="width: 700px;">
+	<button 
+		onclick="closeModal();" 
+		autofocus
+		style="
+			float: right; 
+			margin-top: 1rem;
+			position: sticky;
+			top: 1rem;
+		"
+	>Close</button>
+
+	<h1>Standard Features</h1>
+	<p>There are a lot of UI/accessibility issues related to modal dialogs/windows. <code>openModal()</code> aims to take care of all of them for you, with zero configuration.</p>
+
+	<p>Verify for yourself that:</p>
 	<ul>
 		<li>The parent window cannot be scrolled while this is open.</li>
 		<li>Clicking on the parent window does nothing.</li>
@@ -16,14 +30,11 @@
 			var button = window.parent.document.getElementById('alert_something');
 			button.click();
 			button.focus();
-		">Verify</button>
+		">Click test button in parent window</button>
 		<li>The iframe has <code>aria-modal="true"</code>, which informs assistive technologies that elements in the parent window are not currently interactive. Vimium, for example, generates no "hints" for elements in the parent window.</li>
-		<li>the close button below auto-focuses (because we added the <code>autofocus</code> attribute)</li>
-		<li><button onclick="location.reload();">Clicking this button</button> will reload this iframe, and the close button will focus again</li>
-		<li>Even though the "Demos" header in the parent window is in the same stacking context as this iframe, and its z-index is "<a href="9007199254740991">maxed out</a>", it still does not appear over top of this modal</li>	
+		<li>If your modal document sets <code>autofocus</code> on an element, that element will be focused when the modal opens (we've set <code>autofocus</code> on the close button).</li>
+		<li><button onclick="location.reload();">Reloading the modal</button> will focus the <code>autofocus</code> element again</li>
+		<li>The iframe containing the modal window is the last child of the <code>body</code>, and it's z-index is "<a href="9007199254740991">maxed out</a>", so nothing can ever appear over top of it</li>
+		<li>You do not need to include openModal.js in the child window to call <code>closeModal()</code>.</li>
 	</ul>
-	<p>
-		<button onclick="closeModal();" autofocus>Close</button>
-	</p>
-</div>
-</div>
+</div></div>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="alertModal.css">
+<title>onload test</title>
+<script>
+	function initialize(value) {
+		document.getElementById('value').innerText = value;
+	}
+</script>
+<body>
+<!-- alertModal.css required wrappers -->
+<div><div style="width: 700px;">
+	<p>The parent passed us:</p>
+	<p id="value"></p>
+	<p>Note that if you <button onclick="location.reload();">reload this modal</button>, <code>initialize()</code> will be called again.</p>
+	<p><button onclick="closeModal();">Close</button></p>
+</div></div>
