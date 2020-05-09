@@ -11,11 +11,11 @@
 	var closeValue;
 	var rawOpenModal = window.openModal;
 	var rawCloseModalChild = window.closeModalChild;
+	// tracks the "history depth" within the iframe
+	var modalHistoryDepth;
 
-	/*
-		Before passing the options on to openModal, record a new history state.
-	*/
 	window.openModal = function(url, options) {
+		// push history state, recording the opening of the modal
 		var s = history.state || {};
 		s.openModalArguments = {
 			url: url,
@@ -30,7 +30,45 @@
 			history.pushState(s, '', location.href);
 		}
 
+		openModalWithHistoryDepthTracking(url, options);
+	}
+	function openModalWithHistoryDepthTracking(url, options) {
+		// configure the modal window to communicate history depth with us, so that we know how many history entries to pop in closeModalChild
+		options = options || {};
+		modalHistoryDepth = 0;
+		var originalOnload = options.onload;
+		options.onload = function(iw) {
+			trackHistoryDepth(iw);
+			originalOnload && originalOnload(iw);
+		}
 		rawOpenModal(url, options);
+	}
+	function trackHistoryDepth(iw) {
+		/*
+			TODO - cross origin support
+		*/
+		// TODO - fallback? window.performance is fairly new, I think there are older APIs we can use as fall back
+		if (iw.performance.getEntriesByType('navigation')[0].type == 'navigate') {
+			// This is a "new navigation" - increment modalHistoryDepth
+			modalHistoryDepth++;
+			var s = iw.history.state || {};
+			s.openModalHistoryDepth = modalHistoryDepth;
+			iw.history.replaceState(s, '', iw.location.href);
+		}
+		else {
+			// We're either reloading or restoring history entry
+			modalHistoryDepth = iw.history.state.openModalHistoryDepth;
+		}
+
+		// override pushState to increment modalHistoryDepth
+		// we don't use pushState, but modal pages might
+		// TODO - test
+		var rawPushState = iw.history.pushState.bind(iw.history);
+		iw.history.pushState = function(data, title, url) {
+			modalHistoryDepth++;
+			data.openModalHistoryDepth = modalHistoryDepth;
+			rawPushState(data, title, url);
+		}
 	}
 
 	/*
@@ -60,7 +98,7 @@
 
 		if (state && state.openModalArguments) {
 			var s = state.openModalArguments;
-			rawOpenModal(s.url, s.options);
+			openModalWithHistoryDepthTracking(s.url, s.options);
 		}
 	}
 
@@ -69,6 +107,6 @@
 	*/
 	window.closeModalChild = function(value) {
 		closeValue = value;
-		history.back();
+		history.go(-1 * modalHistoryDepth);
 	}
 })();
