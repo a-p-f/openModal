@@ -2,7 +2,9 @@
 <html>
 <head>
 	<title>openModal Demo</title>
-	<script defer src="openModal.js"></script>
+	<script type="module" src="/src/openModal.js"></script>
+	<script defer nomodule src="/dist/openModal.js"></script>
+	<!-- TODO - nomodule fallback script (bundled with rollup.js) -->
 	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -47,6 +49,7 @@
 		<dt><code>onload: function(window) -> undefined</code></dt>
 		<dd>
 			This callback will be invoked every time the modal window loads. <br>
+			Use it to pass information to the child window. <br>
 			<button onclick="
 				openModal('onload_test.html', {onload: function(w) {
 					w.initialize('foobar');
@@ -55,7 +58,7 @@
 		</dd>
 
 		<dt><code>onclose: function(any) -> undefined</code></dt>
-		<dd>This callback will be invoked when the modal is closed. The argument will the value that was passed to <code>closeModal()</code>. <br>
+		<dd>This callback will be invoked when the modal is closed. The argument will be the value that was passed to <code>closeModal()</code> (if given). <br>
 		<button onclick="
 			openModal('onclose_test.html', {
 				onclose: function(value) {
@@ -65,7 +68,7 @@
 		</dd>
 	</dl>
 
-	<p>Inside the modal window, the following will be available:</p>
+	<p>Inside the modal window, you must also load openModal.js. In addition to <code>openModal()</code>, the following will be available:</p>
 	<dl>
 		<dt><code>parent</code></dt>
 		<dd>The parent window (which called <code>openModal()</code>). The modal window can also navigate the parent using links with <code>target="_parent"</code>.<br> <small>These are standard features available in any iframe, but we explicitly endorse their use. We suggest that any native implementation of <code>openModal()</code> should also make these features available, even if that implementation does not use iframes.</small></dd>
@@ -75,20 +78,11 @@
 
 	<h2>Nesting</h2>
 	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
-	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each src, like we do in this demo:<br>
+	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each <code>src</code>, like we do in this demo:<br>
 	<button type="button" onclick="openModal('nestable_alert.html');">Nesting Demo</button>
 	</p>
 
 	<h2>Experimental Features</h2>
-	<h3>History Cleanup</h3>
-	<p>Web browsers seem to treat iframe history as "part of" the history of the parent page. TODO - demo page, test in multiple browsers, explain further.</p>
-	<p><a href="history_cleanup/">Here is an experimental feature</a> where we try to fix this issue.</p>
-
-
-	<h3>History Integration</h3>
-
-	<h2>Going Native</h2>
-	If a native implementation of <code>openModal()</code> was implemented, some additional features could be added (<small>some or all of these features <em>may</em> be possible with a pure javascript solution, but the implementations would likely be hacks that fail in various edge cases)</small>).
 
 	<h3><code>target="_modal"</code></h3>
 	<p>Any link with this target will open the linked document in a modal window.</p>
@@ -102,9 +96,6 @@
 	<h4>Bottom Reload</h4>
 	<p>If window A is covered by (independent) window B, and window A executes <code>location.reload()</code>, then A will reload and B will remain open.</p>
 	<p>This is useful, for example, if A is a "detail" view and B is a form to edit the object shown in A. B can communicate with A (ie. via <code>window.parent.someGlobalCallback()</code>) whenever the user commits a change, and A can then reload so that it reflects those changes. Or, in a situation this simple, B could directly call <code>window.parent.location.reload()</code> to reload A every time the user commits a change.</p>
-
-	<h4>History Navigation</h4>
-	<p>Opening an independent modal should create a new history state. If the user goes "back", the modal should be closed (assuming it cannot go back any further in its own history). The user should then be able to go "forward" to reopen the modal.</p>
 
 	<h2>Tips &amp; Design Patterns</h2>
 

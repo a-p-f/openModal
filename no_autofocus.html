@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<script type="module" src="/src/openModal.js"></script>
+<script defer nomodule src="/dist/openModal.js"></script>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="alertModal.css">
 <title>No Autofocus</title>
@@ -7,6 +9,6 @@
 <!-- alertModal.css required wrappers -->
 <div><div style="width: 700px;">
 	<h1>No Autofocus</h1>
-	<p>This document has no <code>autofocus</code> element, so <code>openModal()</code> sets <code>tabindex="-1"</code> on the <code>body</code>, and focuses the <code>body</code>. Pressing tab once will focus the first focusable element.</p>
+	<p>This document has no <code>autofocus</code> element, so the <code>body</code> will be focused instead. Pressing tab once will focus the first focusable element.</p>
 	<p><button onclick="closeModal();">Close</button></p>
 </div></div>

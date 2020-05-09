@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+<script type="module" src="/src/openModal.js"></script>
+<script defer nomodule src="/dist/openModal.js"></script>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="alertModal.css">
 <title>Standard Features</title>
@@ -35,6 +37,5 @@
 		<li>If your modal document sets <code>autofocus</code> on an element, that element will be focused when the modal opens (we've set <code>autofocus</code> on the close button).</li>
 		<li><button onclick="location.reload();">Reloading the modal</button> will focus the <code>autofocus</code> element again</li>
 		<li>The iframe containing the modal window is the last child of the <code>body</code>, and it's z-index is "<a href="9007199254740991">maxed out</a>", so nothing can ever appear over top of it</li>
-		<li>You do not need to include openModal.js in the child window to call <code>closeModal()</code>.</li>
 	</ul>
 </div></div>
