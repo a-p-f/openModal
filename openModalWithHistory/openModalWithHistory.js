@@ -1,25 +1,37 @@
+/*
+	Notes:
+	- should work cross origin, no need to load script in child
+	- we can always pop modal on back, cannot restore if options not serializable (this is by design, anyway)
+	- closeModal() doesn't work if you create history entries in the iframe -> it only unwinds one, when it should unwind multiple
+*/
+
 (function() {
 	'use strict';
 
 	var closeValue;
+	var rawOpenModal = window.openModal;
 	var rawCloseModalChild = window.closeModalChild;
 
 	/*
 		Before passing the options on to openModal, record a new history state.
 	*/
-	function openModalWithHistory(url, options) {
+	window.openModal = function(url, options) {
 		var s = history.state || {};
-		s.openModalWithHistoryState = {
+		s.openModalArguments = {
 			url: url,
 			options: options,
 		}
-		// Note - will fail if options is not serializable
-		// Don't bother catching - the error is self-explanatory
-		history.pushState(s, '', location.href);
+		try {
+			history.pushState(s, '', location.href);
+		} catch (e) {
+			// options is not serializable
+			// we still add a history entry, so that we can close this modal on back, but we won't be able to restore it on forward navigation
+			s.openModalArguments = null;
+			history.pushState(s, '', location.href);
+		}
 
-		openModal(url, options);
+		rawOpenModal(url, options);
 	}
-	window.openModalWithHistory = openModalWithHistory;
 
 	/*
 		Respond to history changes caused by forward/back/reload.
@@ -32,13 +44,13 @@
 	});
 	function respondToStateChange(state) {
 		/*
-			Note - we do not allow changes to our history while ANY modal is open (even those not opened via openModalWithHistory).
+			Note - we do not allow changes to our history while any modal is open.
 			
-			Our history WILL change whenever a modal is opened/closed "with history". It MAY also change at any time when there is no modal open (if your page uses pushState).
+			Our history WILL change whenever a modal is opened/closed. It MAY also change at any time when there is no modal open (if your page uses pushState).
 
-			Our history MAY NOT change while any modal is open (even those opened "without history"). This is a rule we are imposing, but I can't see why anyone would ever want to do that (the parent is non-interactive while a modal child is open, so why should history entries be created?).
+			Our history MAY NOT change while any modal is open. This is a rule we are imposing, but I can't see why anyone would ever want to do that (the parent is non-interactive while a modal child is open, so why should history entries be created?).
 
-			This means that, in response to any history state change, we can safely close any modal that is currently open.
+			This means that, in response to any history state change, we can safely close any modal that is currently open (since it could not have been open both before and after a history change).
 		*/
 		try {
 			rawCloseModalChild();
@@ -46,31 +58,17 @@
 			// No modal was open.
 		}
 
-		if (state && state.openModalWithHistoryState) {
-			var s = state.openModalWithHistoryState;
-			openModal(s.url, s.options);
+		if (state && state.openModalArguments) {
+			var s = state.openModalArguments;
+			rawOpenModal(s.url, s.options);
 		}
 	}
 
 	/*
-		Whenever someone tries to close a modal window directly, first check if the modal was opened with history.
-
-		If it was, we want the outcome to be equivalent to the user having exited the modal via the browser's back button. So we invoke history.back(), and let our popstate listener do the actual close.
+		Make sure to unwind history when we close modal programmatically
 	*/
 	window.closeModalChild = function(value) {
-		if (history.state && history.state.openModalWithHistoryState) {
-			closeValue = value;
-
-			// TODO - verify that, even if the modal window has its own history (ie it navigated between several pages), this will back out our history, not the iframe's.
-
-			/*
-				Aargh! Doesn't work. If iframe has history, it unwinds that.
-				
-			*/
-			history.back();
-		}
-		else {
-			rawCloseModalChild();
-		}
+		closeValue = value;
+		history.back();
 	}
 })();
