@@ -6,7 +6,7 @@ if (window.parent != window && window.parent._closeModalWithValue) {
 
 	window.parent.postMessage({
 		modalChildTitled: document.title,
-	});
+	}, '*');
 
 	const target = document.querySelector('[autofocus]');
 	if (target) {
@@ -32,6 +32,6 @@ function closeModal(value) {
 		// value must be serializable
 		window.parent.postMessage({
 			closeModalWithValue: value,
-		});
+		}, '*');
 	}
 }
