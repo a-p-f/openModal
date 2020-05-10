@@ -1,21 +1,9 @@
 import * as historyDepth from './historyDepth.js';
 
-
-addEventListener('popstate', function(e) {
-	console.debug('popstate occurred in ' + location.pathname);
-	console.debug(history.state);
-});
-
-
-
 let closeValue;
 
 // Make sure this is actually a modal child before we do anything
 if (window.parent != window && window.parent._closeModalWithValue) {
-	// TODO: explain
-	window.name = window.name || 'openModalWindow'+Date.now();
-
-
 	historyDepth.initialize();
 
 	window.parent.postMessage({
@@ -33,6 +21,7 @@ if (window.parent != window && window.parent._closeModalWithValue) {
 
 	/*
 		Note - we make sure to manipulate history only AFTER this iframe has focus
+		It seems i
 	*/
 	if (historyDepth.isPageZero()) {
 		historyDepth.duplicateState();
@@ -45,7 +34,6 @@ if (window.parent != window && window.parent._closeModalWithValue) {
 			(ie the user used back menu to go back multiple pages at once)
 			History state will have no depth data at all, and I think some browsers (IE) won't even let us read the state (since it wasn't created in this window).
 		*/
-		console.debug('popped state in child: ', history.state);
 		if (historyDepth.isPageZero()) {
 			exit();
 		}

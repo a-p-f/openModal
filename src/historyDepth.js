@@ -23,11 +23,19 @@ function setHistoryDepth(value) {
 
 export function initialize() {
 	/*
+		We need per-window storage on both the history state entry and in sessionStorage.
+
+		For same-domain iframes, these are shared between iframe and parent window (in some browsers, at least). We need a persistent, unique key to identify this window. We use window name for that key.
+	*/
+	window.name = window.name || 'openModalWindow'+Date.now();
+
+	/*
 		On popstate, restore session depth from history depth
 	*/
 	addEventListener('popstate', function(e) {
 		const s = safeGetState();
 		// Just in case the browser fires a popstate event on the first page load within the modal
+		// TODO - try setting to 0
 		if (!s || !(key() in s)) return
 
 		setSessionDepth(s[key()]);
@@ -53,7 +61,6 @@ export function initialize() {
 		Determine depth of current page
 	*/
 	const s = safeGetState() || {};
-	console.debug('initializing in window from state: ', location.pathname, s);
 	if (key() in s) {
 		// this page was loaded from history
 		setSessionDepth(s[key()]);
@@ -67,12 +74,10 @@ export function initialize() {
 		setSessionDepth(newDepth);
 		setHistoryDepth(newDepth);
 	}
-	console.debug(history.state, history.length);
 }
 
 export function unwind() {
 	const toUnwind = getSessionDepth();
-	console.debug(`about to unwind ${toUnwind} from ${location.pathname}`);
 	if (toUnwind == 0) return
 	history.go(-1 * toUnwind);
 }
@@ -86,8 +91,5 @@ export function isPageZero() {
 	Must be called AFTER initialize().
 */
 export function duplicateState() {
-	console.debug('duplicating state in ' + location.pathname);
 	history.pushState(safeGetState(), '', location.href);
-	console.debug(history.state, history.length);
-
 }

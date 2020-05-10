@@ -7,7 +7,6 @@ export function safeGetState() {
 	try {
 		return history.state
 	} catch(e) {
-		console.debug('could not access state')
 		return null
 	}
 }
