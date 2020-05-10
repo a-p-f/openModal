@@ -7,6 +7,9 @@ import {safeGetState} from './utils.js';
 */
 
 function key() {
+	if (!window.name) {
+		throw new Error('You cannot call this until you\'ve given this window a unique name');
+	}
 	return window.name+'openModalHistoryDepth';
 }
 function getSessionDepth() {
@@ -20,15 +23,44 @@ function setHistoryDepth(value) {
 	s[key()] = value;
 	history.replaceState(s, '', location.href);
 }
+/*
+	Return depth from history.state.
+	If this window's depth has not yet been set on the current history entry, return null.
+*/
 export function getHistoryDepth() {
-	/*
-		Return depth from history.state.
-		If this window's depth has not yet been set on the current history entry, return null.
-	*/
 	const s = safeGetState() || {};
 	if (key() in s) return s[key()];
 	return null
 }
+
+/*
+	Patch pushState so that it always increments history depth and session depth.
+	
+	This allows us to keep track of history depth, even if the document in the modal window is using pushState.
+
+	We do require, however, that you always push a "simple object" (ie. something that serializes to a json dictionary) as the state object, so that we can attach our own data to it.
+
+	TODO - verify that this works
+*/
+export function patchPushState() {
+	const _pushState = history.pushState.bind(history);
+	history.pushState = function(data, title, url) {
+		if (!data || JSON.stringify(data)[0] != '{') {
+			throw new Error('Pages inside a modal window may use history.pushState, but they must pass a "simple object" (NOT Array, String, Number, null, etc.) as the state object');
+		}
+
+		const newDepth = getSessionDepth() + 1;		
+		setSessionDepth(newDepth);
+
+		data[key()] = newDepth;
+		_pushState(data, title, url);
+	}
+
+}
+function isObject (a) {
+    return (!!a) && (a.constructor === Object);
+};
+
 
 export function initialize() {
 	/*
@@ -49,22 +81,6 @@ export function initialize() {
 		}
 		setSessionDepth(s[key()]);
 	});
-
-	/*
-		Patch pushState so that it always increments history depth and session depth.
-
-		This requires that anyone who uses pushState() in the modal child will only ever push an object as state data, so that we can add a property to that data.
-	*/
-	const _pushState = history.pushState.bind(history);
-	history.pushState = function(data, title, url) {
-		const newDepth = getSessionDepth() + 1;
-		setSessionDepth(newDepth);
-
-		// TODO: verify that data is an object
-		// If data is a string, this assignment won't throw any errors, but the property will not readable on history.state
-		data[key()] = newDepth;
-		_pushState(data, title, url);
-	}
 
 	/*
 		Determine depth of current page

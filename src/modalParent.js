@@ -17,6 +17,17 @@ addEventListener('message', function(e) {
 		_closeModalWithValue(e.data.closeModalWithValue);
 	}
 });
+
+/*
+	In some browsers, when the user navigates back to the "initial state" in the modal window, the popstate event will occur in the child window. In that case, it will pass us the "closeModalWithValue" message. 
+
+	In other browsers (Safari), this window will receive that same popstate event (because this is the window where that history entry was created?). 
+*/
+addEventListener('popstate', function() {
+	// TODO - get value from child
+	if (iframe) _closeModalWithValue();
+});
+
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
 window._closeModalWithValue = function(value) {
 	if (!iframe) {
