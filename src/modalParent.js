@@ -1,16 +1,10 @@
-import {getChildState, pushChildState} from './childState.js';
+import {safeGetState} from './utils.js';
 
 let iframe;
 let lockedScrollTop, lockedScrollLeft;
 let previousActiveElement;
-
-// Will be a unique value for every modal we open
-let modalID;
-// so far, we only use options.onload, but we store all options anyway
-let modalOptions;
-// the actual closing of the modal happens in response to popstate
-// we'll set this value before calling history.back()
-let modalReturnValue;
+let onModalclose;
+let historyStateBeforeOpen;
 
 // listen to messages from child
 addEventListener('message', function(e) {
@@ -19,83 +13,44 @@ addEventListener('message', function(e) {
 	if (e.data.modalChildTitled) {
 		iframe.setAttribute('aria-label', e.data.modalChildTitled);
 	}
-	if ('closeModalWithValue' == e.data) {
+	if ('closeModalWithValue' in e.data) {
 		_closeModalWithValue(e.data.closeModalWithValue);
-	}
-	if (e.data == 'modalChildPoppedState') {
-		respondToStateChange();
 	}
 });
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
 window._closeModalWithValue = function(value) {
-	modalReturnValue = value;
-	console.debug('about to go back. iframe: ', iframe);
-
-	/*
-		Note - in some browsers, this will trigger popstate event in this window, which we handle.
-		In other browsers, this will trigger popstate event in the modal window. The child window will catch that, and send us a 'modalChildPoppedState' message.
-	*/
-	history.back();
-}
-
-window.testIframe = function() {
-	console.debug(iframe);
-}
-
-// respond to state changes
-addEventListener('popstate', respondToStateChange);
-addEventListener('load', respondToStateChange);
-function respondToStateChange() {
-	// console.debug('popped state in parent');
-	const childState = getChildState();
-	// console.debug(childState);
-	// console.debug(lockedScrollLeft);
-	// console.debug(modalID);
-	// console.debug(location.href);
-	if (!childState) {
-		console.debug('iframe is :', iframe);
-		if (iframe) {
-			console.debug('closing iframe');
-			closeModalChild();
-		}
-		return
+	if (!iframe) {
+		throw new Error('No modal window is currently open.');
 	}
-	// the correct modal is already open
-	if (childState.id == modalID) return
+	iframe.parentElement.removeChild(iframe);
+	removeEventListener('scroll', fixScroll);
+	removeEventListener('click', cancel, true);
+	document.body.removeEventListener('focus', refocus_iframe, true); 
+	previousActiveElement && previousActiveElement.focus();
+	iframe = null;
 
-	// the child modal is not "restorable" (contained non-serializable options)
-	if (!childState.url) return
+	/* 
+		HACK
 
-	_openModal(childState.id, childState.url, childState.options);
+		history.state SHOULD now == historyStateBeforeOpen
+		(it is the child's responsibility to ensure it pops any states created while it was focused/open)
+
+		This is the case in Chrome.
+
+		In IE, we seem to be at the correct position in the history stack, yet READING history.state returns the wrong value. This 
+	*/
+	history.replaceState(historyStateBeforeOpen, '', location.href);
+
+	onModalclose && onModalclose(value);
+	onModalclose = null;
 }
 
 window.openModal = function(url, options={}) {
-	const id = Date.now();
-	try {
-		pushChildState({
-			id: id,
-			url: url,
-			options: options,
-		});
-	} catch(e) {
-		// options could not be serialized
-		// still push history entry, so we can pop modal
-		// doesn't contain url or options, so we won't be able to restore modal on forward() 
-		pushChildState({
-			id: id,
-		});
-	}
-	_openModal(id, url, options);
-}
-
-function _openModal(id, url, options={}) {
 	if (iframe) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
 
-	modalID = id;
-	modalOptions = options;
-	modalReturnValue = null;
+	historyStateBeforeOpen = safeGetState();
 
 	previousActiveElement = document.activeElement;
 	lockedScrollLeft = document.documentElement.scrollLeft;
@@ -103,6 +58,8 @@ function _openModal(id, url, options={}) {
 	addEventListener('scroll', fixScroll);
 	addEventListener('click', cancel, true);
 	document.body.addEventListener('focus', refocus_iframe, true);
+
+	onModalclose = options.onclose;
 
 	iframe = createIframe();
 	if (options.background) {
@@ -112,22 +69,6 @@ function _openModal(id, url, options={}) {
 		options.onload && options.onload(iframe.contentWindow);
 	});
 	iframe.src = url;
-}
-function closeModalChild() {
-	if (!iframe) {
-		throw new Error('No modal window is currently open.');
-	}
-	iframe.parentElement.removeChild(iframe);
-	removeEventListener('scroll', fixScroll);
-	removeEventListener('click', cancel, true);
-	document.body.removeEventListener('focus', refocus_iframe, true); 
-	previousActiveElement && previousActiveElement.focus();
-
-	modalOptions.onclose && modalOptions.onclose(modalReturnValue);
-
-	iframe = null;
-	modalID = null;
-	modalOptions = null;
 }
 function createIframe() {
 	var i = document.createElement('iframe');

@@ -26,10 +26,10 @@ export function initialize() {
 		On popstate, restore session depth from history depth
 	*/
 	addEventListener('popstate', function(e) {
-		console.debug('popped state in child: ', e.state);
 		const s = safeGetState();
 		// Just in case the browser fires a popstate event on the first page load within the modal
 		if (!s || !(key() in s)) return
+
 		setSessionDepth(s[key()]);
 	});
 
@@ -39,7 +39,7 @@ export function initialize() {
 		This requires that anyone who uses pushState() in the modal child will only ever push an object as state data, so that we can add a property to that data.
 	*/
 	const _pushState = history.pushState.bind(history);
-	window.pushState = function(data, title, url) {
+	history.pushState = function(data, title, url) {
 		const newDepth = getSessionDepth() + 1;
 		setSessionDepth(newDepth);
 
@@ -49,7 +49,11 @@ export function initialize() {
 		_pushState(data, title, url);
 	}
 
+	/*
+		Determine depth of current page
+	*/
 	const s = safeGetState() || {};
+	console.debug('initializing in window from state: ', location.pathname, s);
 	if (key() in s) {
 		// this page was loaded from history
 		setSessionDepth(s[key()]);
@@ -63,10 +67,27 @@ export function initialize() {
 		setSessionDepth(newDepth);
 		setHistoryDepth(newDepth);
 	}
+	console.debug(history.state, history.length);
 }
 
 export function unwind() {
 	const toUnwind = getSessionDepth();
+	console.debug(`about to unwind ${toUnwind} from ${location.pathname}`);
 	if (toUnwind == 0) return
 	history.go(-1 * toUnwind);
+}
+
+export function isPageZero() {
+	return getSessionDepth() == 0;
+}
+/*
+	Create a new history entry which does nothing except increment history/session depth.
+
+	Must be called AFTER initialize().
+*/
+export function duplicateState() {
+	console.debug('duplicating state in ' + location.pathname);
+	history.pushState(safeGetState(), '', location.href);
+	console.debug(history.state, history.length);
+
 }

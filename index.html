@@ -2,9 +2,9 @@
 <html>
 <head>
 	<title>openModal Demo</title>
-	<!-- <script type="module" src="/src/openModal.js"></script> -->
-	<!-- <script defer nomodule src="/dist/openModal.js"></script> -->
-	<script defer src="/dist/openModal.js"></script>
+	<script type="module" src="/src/openModal.js"></script>
+	<script defer nomodule src="/dist/openModal.js"></script>
+	<!-- <script defer src="/dist/openModal.js"></script> -->
 	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -62,6 +62,7 @@
 		<button onclick="
 			openModal('onclose_test.html', {
 				onclose: function(value) {
+					console.log('The modal closed');
 					alert('The modal window closed with value '+value);
 				},
 			});">Try it out</button>
@@ -79,6 +80,12 @@
 	<h2>Nesting</h2>
 	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
 	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each <code>src</code>, like we do in this demo:<br>
+	<button type="button" onclick="
+		history.replaceState('state0', '', location.href);
+		console.debug(history.state, history.length);
+		history.pushState('state1', '', location.href);
+		console.debug(history.state, history.length);
+	">Create Test states</button>
 	<button type="button" onclick="openModal('nestable_alert.html');">Nesting Demo</button>
 	</p>
 
