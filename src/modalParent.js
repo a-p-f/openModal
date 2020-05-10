@@ -37,10 +37,15 @@ window._closeModalWithValue = function(value) {
 
 		This is the case in Chrome.
 
-		In IE, we seem to be at the correct position in the history stack, yet READING history.state returns the wrong value. This 
+		In IE, we seem to be at the correct position in the history stack, yet READING history.state returns the wrong value.
 
 		NOTE: if the user actually used the back menu to go back multiple states, then this will cause issues. This will no longer be the correct state.
 		TODO - add tests, think about alternative. 
+
+		Also, the IE issue MAY be happening because the child window actually does replaceState() on this state, adding data to it.
+		Perhaps the parent window can't read this state, because the child has manipulated it. 
+
+		After we go to "2 step opening", this issue might resolve itself, and perhaps we can drop this entirely.
 	*/
 	history.replaceState(historyStateBeforeOpen, '', location.href);
 

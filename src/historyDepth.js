@@ -20,6 +20,15 @@ function setHistoryDepth(value) {
 	s[key()] = value;
 	history.replaceState(s, '', location.href);
 }
+export function getHistoryDepth() {
+	/*
+		Return depth from history.state.
+		If this window's depth has not yet been set on the current history entry, return null.
+	*/
+	const s = safeGetState() || {};
+	if (key() in s) return s[key()];
+	return null
+}
 
 export function initialize() {
 	/*

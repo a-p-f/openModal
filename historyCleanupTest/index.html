@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>History Cleanup Test</title>
+	<script type="module" src="/src/openModal.js"></script>
+	<script defer nomodule src="/dist/openModal.js"></script>
+	<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+	<h1>History Cleanup Test</h1>
+	<button type="button" onclick="openModal('./modalWithHistory.html');">Open This Modal</button>
+	<p>
+		After closing, the modal, click your browser's back button.
+		The child modal should have unwound it's own history, so pressing "back" once from this page should take you back to the home page.
+	</p>
+</body>
+</html>

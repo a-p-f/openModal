@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<script type="module" src="/src/openModal.js"></script>
+<script defer nomodule src="/dist/openModal.js"></script>
+<link rel="stylesheet" href="/alertModal.css">
+<link rel="stylesheet" href="/style.css">
+<head>
+	<title>Modal With History</title>
+	<style>
+		a {
+			padding: 0.5rem;
+		}
+		:target {
+			background-color: yellow;
+		}
+	</style>
+</head>
+<body>
+<!-- alertModal.css required wrappers -->
+<div><div style="width: 700px;">
+	<p>Click the buttons below to create some history entries in this modal, and then click the close button.</p>
+	<p><a id="A" href="?A#A">Page A</a></p>
+	<p><a id="B" href="?B#B">Page B</a></p>
+	<p><button onclick="closeModal();">Close</button></p>
+</div></div>
+</body>
+</html>

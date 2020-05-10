@@ -2,8 +2,20 @@ import * as historyDepth from './historyDepth.js';
 
 let closeValue;
 
+// DEBUG
+addEventListener('popstate', function(e) {
+	console.log(`popstate in ${location.href}: ${history.state}`);
+});
+
 // Make sure this is actually a modal child before we do anything
 if (window.parent != window && window.parent._closeModalWithValue) {
+	/*
+		This will happen whenever we try to close modal after performing regular navigation within the modal.
+	*/
+	if (historyDepth.getHistoryDepth() === 0) {
+		exit();
+	}
+
 	historyDepth.initialize();
 
 	window.parent.postMessage({
