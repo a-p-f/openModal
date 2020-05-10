@@ -17,6 +17,15 @@ if (window.parent != window && window.parent._closeModalWithValue) {
 		document.body.focus();
 	}
 
+	/*
+		In some browsers (IE), this window receives the popstate event when the parent executes history.back() to close it.
+		We need to pass that event along to the parent.
+	*/
+	addEventListener('popstate', function() {
+		console.log('popstate in child');
+		window.parent.postMessage('modalChildPoppedState', '*');
+	});
+
 	window.closeModal = closeModal;
 }
 

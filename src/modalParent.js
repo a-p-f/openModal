@@ -19,27 +19,43 @@ addEventListener('message', function(e) {
 	if (e.data.modalChildTitled) {
 		iframe.setAttribute('aria-label', e.data.modalChildTitled);
 	}
-	if ('closeModalWithValue' in e.data) {
+	if ('closeModalWithValue' == e.data) {
 		_closeModalWithValue(e.data.closeModalWithValue);
+	}
+	if (e.data == 'modalChildPoppedState') {
+		respondToStateChange();
 	}
 });
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
 window._closeModalWithValue = function(value) {
 	modalReturnValue = value;
+	console.debug('about to go back. iframe: ', iframe);
+
+	/*
+		Note - in some browsers, this will trigger popstate event in this window, which we handle.
+		In other browsers, this will trigger popstate event in the modal window. The child window will catch that, and send us a 'modalChildPoppedState' message.
+	*/
 	history.back();
 }
 
+window.testIframe = function() {
+	console.debug(iframe);
+}
+
 // respond to state changes
-addEventListener('popstate', function(e) {
-	respondToStateChange(e.state);
-});
-addEventListener('load', function(e) {
-	respondToStateChange(history.state);
-});
+addEventListener('popstate', respondToStateChange);
+addEventListener('load', respondToStateChange);
 function respondToStateChange() {
+	// console.debug('popped state in parent');
 	const childState = getChildState();
+	// console.debug(childState);
+	// console.debug(lockedScrollLeft);
+	// console.debug(modalID);
+	// console.debug(location.href);
 	if (!childState) {
+		console.debug('iframe is :', iframe);
 		if (iframe) {
+			console.debug('closing iframe');
 			closeModalChild();
 		}
 		return
