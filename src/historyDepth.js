@@ -34,10 +34,10 @@ export function initialize() {
 	*/
 	addEventListener('popstate', function(e) {
 		const s = safeGetState();
-		// Just in case the browser fires a popstate event on the first page load within the modal
-		// TODO - try setting to 0
-		if (!s || !(key() in s)) return
-
+		if (!s || !(key() in s)) {
+			setSessionDepth(0);
+			return
+		}
 		setSessionDepth(s[key()]);
 	});
 
