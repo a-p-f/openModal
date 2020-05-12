@@ -16,6 +16,7 @@ addEventListener('message', function(e) {
 		iframe.setAttribute('aria-label', e.data.modalChildTitled);
 	}
 	if ('setModalCloseValue' in e.data) {
+		console.debug('received set close value message');
 		_setOpenModalCloseValue(e.data.setModalCloseValue);
 	}
 	if ('closeModal' in e.data) {
@@ -60,10 +61,7 @@ function closeModal() {
 		NOTE: if the user actually used the back menu to go back multiple states, then this will cause issues. This will no longer be the correct state.
 		TODO - add tests, think about alternative. 
 
-		Also, the IE issue MAY be happening because the child window actually does replaceState() on this state, adding data to it.
-		Perhaps the parent window can't read this state, because the child has manipulated it. 
-
-		After we go to "2 step opening", this issue might resolve itself, and perhaps we can drop this entirely.
+		TODO - try removing this, now that the child no longer replaces this state
 	*/
 	history.replaceState(historyStateBeforeOpen, '', location.href);
 

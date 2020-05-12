@@ -7,17 +7,25 @@ function isModalChild() {
 addEventListener('message', function(e) {
 	if (e.source != window.parent) return
 	if (e.data == 'MODAL_CLOSE_VALUE_RECEIVED') {
+		console.debug('parent acked value. unwinding...')
 		// Go back to initial state before closing the modal window
 		// In some browsers, this will trigger popstate in our window
 		// (and our popstate listener will call exit())
 		// In other browsers, this will cause a popstate event in the parent window
 		history.go(-1 * parseInt(sessionStorage[depthKey]));
+
+		// IE hack
+		// In some edge cases, the above history unwind will neither fire popstate nor load a new page (even though it does correctly change history entry)
+		// TODO - guard this with an "is IE" check, so we know we aren't using this garbage in other browsers?
+		setTimeout(exit, 200);
 	}
 });
 window.closeModal = function(value) {
 	if (!isModalChild()) {
 		throw new Error('This is not a modal window');
 	}
+
+	console.debug('closeModal called');
 	// We need to unwind all history we created.
 	// Store value for later access, go back in history.
 	// The actual exiting will be done in either a popstate listener, or when the initial page reloads (if this unwinds any actual page navigations)
@@ -161,6 +169,7 @@ if (isModalChild()) {
 	// }
 
 	addEventListener('popstate', function() {
+		console.debug(`popped state in child ${location.href}`);
 		if (!historyStateIsReadableAndHasKey(depthKey)) {
 			exit();
 			return
