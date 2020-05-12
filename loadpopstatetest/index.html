@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Load popstate test</title>
+	<script>
+		addEventListener('popstate', function(e) {
+			console.log('popped state: ', history.state);
+		});
+	</script>
+</head>
+<body>
+	<button onclick="history.pushState('foobar', '', location.href)">
+		Push a state
+	</button>
+
+	<a href="http://google.com">Google</a>
+</body>
+</html>

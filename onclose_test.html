@@ -9,7 +9,7 @@
 <!-- alertModal.css required wrappers -->
 <div><div style="width: 700px;">
 
-	<form onsubmit="closeModal(this.val.value);">
+	<form onsubmit="closeModal(this.val.value); return false;">
 		<p>
 			<label>Value to pass to parent: <input type="text" name="val" required></label> <br>
 			<input type="submit" value="Submit">

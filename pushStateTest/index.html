@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test push state in parent back in child</title>
+	<script>
+		function openIframe() {
+			console.log(history.length, history.state);
+			history.pushState('iframeOpen', '', location.href);
+			console.log(history.length, history.state);
+			var iframe = document.createElement('iframe');
+			document.body.appendChild(iframe);
+			iframe.src = './child.html';	
+		}
+		addEventListener('popstate', function() {
+			console.log('popped state in parent: ', history.state);
+		});
+		addEventListener('message', function() {
+			console.log('popstate message received from child: ', history.state);
+		});
+
+	</script>
+</head>
+<body>
+	<button onclick="openIframe();">
+		Setup
+	</button>
+
+</body>
+</html>

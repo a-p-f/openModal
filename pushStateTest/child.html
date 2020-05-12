@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<button id="button" onclick="history.back();">Back</button>
+
+	<script type="text/javascript">
+		document.getElementById('button').focus();
+		addEventListener('popstate', function() {
+			console.log('popped state in child');
+			window.parent.postMessage('popped state');
+		});
+
+		console.log('read state in child: ', history.state)
+	</script>
+</body>
+</html>

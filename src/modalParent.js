@@ -5,31 +5,38 @@ let lockedScrollTop, lockedScrollLeft;
 let previousActiveElement;
 let onModalclose;
 let historyStateBeforeOpen;
+let modalCloseValue;
 
 // listen to messages from child
 addEventListener('message', function(e) {
+	if (!iframe) return
 	if (e.source != iframe.contentWindow) return
 
 	if (e.data.modalChildTitled) {
 		iframe.setAttribute('aria-label', e.data.modalChildTitled);
 	}
-	if ('closeModalWithValue' in e.data) {
-		_closeModalWithValue(e.data.closeModalWithValue);
+	if ('setModalCloseValue' in e.data) {
+		_setOpenModalCloseValue(e.data.setModalCloseValue);
+	}
+	if ('closeModal' in e.data) {
+		closeModal();
 	}
 });
-
 /*
-	In some browsers, when the user navigates back to the "initial state" in the modal window, the popstate event will occur in the child window. In that case, it will pass us the "closeModalWithValue" message. 
-
-	In other browsers (Safari), this window will receive that same popstate event (because this is the window where that history entry was created?). 
+	In some browsers (safari), when the modal goes back to it's original history state, the popstate event will be fired in this window.
 */
 addEventListener('popstate', function() {
-	// TODO - get value from child
-	if (iframe) _closeModalWithValue();
+	if (iframe) closeModal();
 });
 
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
-window._closeModalWithValue = function(value) {
+window._setOpenModalCloseValue = function(value) {
+	modalCloseValue = value;
+	// Tell the child window to unwind its history
+	// It will be closed AFTER history unwinds
+	iframe.contentWindow.postMessage('MODAL_CLOSE_VALUE_RECEIVED', '*');
+}
+function closeModal() {
 	if (!iframe) {
 		throw new Error('No modal window is currently open.');
 	}
@@ -60,7 +67,7 @@ window._closeModalWithValue = function(value) {
 	*/
 	history.replaceState(historyStateBeforeOpen, '', location.href);
 
-	onModalclose && onModalclose(value);
+	onModalclose && onModalclose(modalCloseValue);
 	onModalclose = null;
 }
 

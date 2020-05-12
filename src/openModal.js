@@ -15,7 +15,7 @@
 */
 
 /*
-	TODO - add "go back 2 pages" test. Varify that the modal closes, parent ends up in correct state.
+	TODO - add "go back 2 pages" test. Verify that the modal closes, parent ends up in correct state.
 */
 
 // Import for side-effects
