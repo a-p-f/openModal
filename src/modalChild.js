@@ -25,11 +25,8 @@ window.closeModal = function(value) {
 		throw new Error('This is not a modal window');
 	}
 
-	console.debug('closeModal called');
-	// We need to unwind all history we created.
-	// Store value for later access, go back in history.
-	// The actual exiting will be done in either a popstate listener, or when the initial page reloads (if this unwinds any actual page navigations)
-
+	// Parent will let us know when it receives this message, then we'll unwind history
+	// TODO - test same origin with non-serializable value, test cross-origin
 	try {
 		window.parent._setOpenModalCloseValue(value);
 	} catch(e) {
@@ -39,15 +36,6 @@ window.closeModal = function(value) {
 			setModalCloseValue: value,
 		}, '*');
 	}
-
-	// history.go(-1*toUnwind);
-
-	// In some browsers, this is redundant
-	// We'll get a popstate event, and call exit() from there
-	// In other browsers (Safari), the above "history unwind" causes a popstate event in the parent, NOT in this window
-	// exit() is safe to call multiple times - it has a guard so that it only runs once
-	// PROBELM: chrome fucks up if we remove iframe before letting the history.go(...) complete
-	// exit();
 }
 function exit() {
 	window.parent.postMessage({
@@ -110,13 +98,6 @@ function patchPushState() {
 	}
 }
 
-
-// DEBUG
-addEventListener('popstate', function(e) {
-	console.log(`popstate in ${location.href}: ${history.state}`);
-});
-
-
 // Make sure this is actually a modal child before we do anything
 if (isModalChild()) {
 	console.debug('initializing modal child');
@@ -157,17 +138,6 @@ if (isModalChild()) {
 
 	patchPushState();
 
-	/*
-		This is what I want to do.
-		The problem is, since the "initial state" was not created by this window, IE sometimes lies to us when we get back to the initial state and try to read history.state. Instead of returning null, it actually tells us we are in some in other state.
-	*/
-	// addEventListener('popstate', function() {
-	// 	if (!historyStateIsReadableAndHasKey(depthKey)) {
-	// 		// User navigated back to initial state (navigated only over state transitions created with pushState)
-	// 		exit();
-	// 	}
-	// }
-
 	addEventListener('popstate', function() {
 		console.debug(`popped state in child ${location.href}`);
 		if (!historyStateIsReadableAndHasKey(depthKey)) {
@@ -181,28 +151,15 @@ if (isModalChild()) {
 
 			If we get a popstate event and history.state[depthKey] hasn't changed, assume we're in the initial state and IE is lying to us.
 
-			ONLY do this for IE 11. Some browsers (Safari) fire popstate events at initial page load (when reloading from history), and that's one case where history.state[depthKey] WILL equal lastDepth.
+			ONLY do this for IE 11. Some browsers (Safari) fire popstate events at initial page load (when reloading from history), and in that case history.state[depthKey] WILL equal lastDepth.
 		*/
 		if (navigator.userAgent.indexOf("Trident/7.0") > -1 && history.state[depthKey] == sessionStorage[depthKey]) {
 			exit();
 			return
 		}
+
 		sessionStorage[depthKey] = history.state[depthKey];
 	});
-
-	// console.debug('adding popstate listener');
-	// addEventListener('popstate', function() {
-	// 	console.debug('handling popstate');
-	// 	if (!historyStateIsReadableAndHasKey(depthKey)) {
-	// 		console.debug('exiting');
-	// 		// User navigated back to initial state (navigated only over state transitions created with pushState)
-	// 		exit();
-	// 	}
-	// 	console.debug(history.state);
-	// 	setTimeout(function() {
-	// 		console.debug(history.state);
-	// 	}, 200);
-	// });
 
 	prepareChildDocument();
 }

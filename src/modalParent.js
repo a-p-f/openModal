@@ -4,7 +4,6 @@ let iframe;
 let lockedScrollTop, lockedScrollLeft;
 let previousActiveElement;
 let onModalclose;
-let historyStateBeforeOpen;
 let modalCloseValue;
 
 // listen to messages from child
@@ -48,23 +47,6 @@ function closeModal() {
 	previousActiveElement && previousActiveElement.focus();
 	iframe = null;
 
-	/* 
-		HACK
-
-		history.state SHOULD now == historyStateBeforeOpen
-		(it is the child's responsibility to ensure it pops any states created while it was focused/open)
-
-		This is the case in Chrome.
-
-		In IE, we seem to be at the correct position in the history stack, yet READING history.state returns the wrong value.
-
-		NOTE: if the user actually used the back menu to go back multiple states, then this will cause issues. This will no longer be the correct state.
-		TODO - add tests, think about alternative. 
-
-		TODO - try removing this, now that the child no longer replaces this state
-	*/
-	history.replaceState(historyStateBeforeOpen, '', location.href);
-
 	onModalclose && onModalclose(modalCloseValue);
 	onModalclose = null;
 }
@@ -73,8 +55,6 @@ window.openModal = function(url, options={}) {
 	if (iframe) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
-
-	historyStateBeforeOpen = safeGetState();
 
 	previousActiveElement = document.activeElement;
 	lockedScrollLeft = document.documentElement.scrollLeft;
