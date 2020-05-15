@@ -1,0 +1,97 @@
+/*
+    _placeholders.css
+
+    This file is for SASS placeholders. 
+    These are reusable groups of rules/patterns, which are applied to various selectors throughout our stylesheets (via SASS '@extend').
+
+    Keep the placeholders in alphabetical order.
+*/
+%big-header-margins {
+    // Notice - top margin is relative (scales with header font size), bottom margin is absolute
+    margin-top: 1em;
+    margin-bottom: 1rem;
+}
+%block-margins {
+    /* 
+        Margins
+
+        We use top and bottom margins on most block level elements
+        Just use an inline style (or utility class) to reset to 0 when needed (ie. for the first heading on a page)
+        This list should contain most presentational block level elements, but intentionally excludes 
+        generic wrappers like div, header, footer, section.
+        There may be a number of other elements that belong here, which I've missed.
+    */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+$form_element_line_height: 1.2;
+%form-all-elements {
+    // Notice - this placeholder must come before other more-specific placeholders,
+    // because some of those will override some of these styles
+    // (ie. adding border radius in form-button)
+    $input-padding-height: 2px;
+    $input-border-width: 1px;
+
+    font: inherit;
+    font-size: inherit;
+    line-height: $form_element_line_height;
+
+    vertical-align: middle;
+
+    padding: $input-padding-height 5px;
+
+    border: $input-border-width solid $grayscale-input-border;
+    border-radius: 0;
+
+    /*
+        Chrome, and possibly other browsers, seem to have a default height set for buttons and inputs,
+        and it's not even consistent between input types (ie. number and date).
+        You can see this height in the "computed" section of the inspector, but not in the styles.
+        Essentially, it seems impossible to set consistent input heights based on line height alone.
+
+        Also, padding on select elements seems to be ignored, so we need to set height based on border-box
+        rather than content-box.
+
+        This may seem overly specific for buttons, which can have multi-line content. In those cases, however,
+        you can simply set height: unset; or height: auto; on the button.
+    */
+    box-sizing: border-box;
+    // Note - some of this is SASS math, but the final calculation (em + pixels) can only be done by the browser
+    // This allows buttons/inputs to have scalabe font size, but fixed padding and border width
+    height: calc(#{1em*$form_element_line_height} + #{2*$input-border-width + 2*$input-padding-height});
+}
+%form-button {
+    background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.3em;
+    cursor: pointer;
+
+    &:active {
+        transform: scale(0.95);
+    }
+}
+%form-element-height-reset {
+    /* Reset height on special input types */
+    height: initial;
+    line-height: initial;
+}
+%light_italic {
+    font-style: italic;
+    color: $grayscale-light-text;
+}
+%small_font {
+    font-size: 0.8rem;
+}
+%table-borders {
+    // "inheritable borders" - applied to all table children
+    // Allows you to change border style on table, and have it apply to all
+    // To "enable" a border on particular element/edge, just set width to 1px
+    border-color: inherit; 
+    border-style: inherit;
+    border-width: 0; 
+}
+%text-input-width {
+    width: 250px;
+}

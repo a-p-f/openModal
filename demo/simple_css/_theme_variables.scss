@@ -1,0 +1,121 @@
+// Note - the values defined in this file are meant to serve as a style guide,
+// as well as defining easy-to-reuse variables.
+// The variables defined here may be used in base styles, component classes,
+// and theme classes.
+// If your project's style differs from these default values, we suggest you 
+// edit/augment this file (don't just create new variables and ignore these)
+
+
+// Colours
+// ----------------------------------------------------------------------------
+
+// We define two classes of colors: "light" and "dark"
+
+// The dark colors all have fairly good contrast with white (with yellow
+// being the only exception - it's included, but it's not really dark 
+// enough to use to color text on a white background). They should be used
+// in conjunction with .white or .bg-white, as appropriate.
+
+// The light colors all have fairly good contrast with black, and are
+// intended for use on a black background. They should be used with
+// .black or .bg-black, as appropriate.
+
+// Note that most of these colors don't result in contrast ratios good enough
+// for regular body text according to WebAIM
+// (https://webaim.org/resources/contrastchecker/)
+// but I think they're adequate for most purposes.
+
+// These variables can be used in your sass files to build other "component" classes
+// _color_classes.css also defines utility classes you can use to apply these
+// colors in your html
+
+// Recommendation:
+// In your project, define one or two extra "brand colors", using this same convention.
+
+// Dark colours
+$red: hsl(0, 85%, 45%);
+$orange: hsl(30, 100%, 45%);
+
+// NOT RECOMMENDED FOR TEXT - just not enough contrast 
+// Limit this to borders, icons, etc. 
+$yellow: hsl(55, 100%, 40%);
+
+$green: hsl(120, 100%, 30%);
+$blue: hsl(210, 90%, 45%);
+$purple: hsl(280, 100%, 40%);
+$pink: hsl(310, 90%, 45%);
+$brown: hsl(22, 56%, 40%);
+$gray: #666;
+// just use 'black' for black
+
+// Light colours
+$light-red: hsl(0, 100%, 70%);
+$light-orange: hsl(30, 100%, 60%);
+$light-yellow: hsl(55, 90%, 55%);
+$light-green: hsl(110, 70%, 60%);
+$light-blue: hsl(210, 100%, 75%);
+$light-purple: hsl(270, 100%, 75%);
+$light-pink: hsl(300, 80%, 70%);
+$light-brown: hsl(22, 70%, 50%);
+$light-gray: #bbb;
+// just use 'white' for white
+
+// Gray scale
+$garyscale-normal-text: #000;
+$grayscale-light-text: #666;
+// Fairly significant separators
+$grayscale-medium-border: #aaa;
+// Recommendation - don't use this anywhere other than buttons and inputs
+// I think those look best when slightly distinguished from other borders
+// This is here mostly to remind you of it's value, if you ever want to 
+// change these values
+$grayscale-input-border: #bbb;
+// Minimal separators - ie. between table rows
+$grayscale-light-border: #ccc;
+$grayscale-light-background: #e4e4e4;
+
+
+// Fonts
+// ----------------------------------------------------------------------------
+// Note - $body-font is not terribly useful - it is applied to html element
+// in _base.scss, and you'll likely never need to use it anywhere else
+// It can be useful, however, to define other custom fonts here,
+// which you might use in other locations
+$body-font: arial, sans-serif;
+
+
+// Sizing/spacing
+// ----------------------------------------------------------------------------
+// The following sizes have some special properties:
+// - all are whole pixel values
+// - each step is approximately a constant factor
+// - you can divide any size into 2 and still have a standard size (just move 2 steps down)
+// - steps are big enough to be noticeable, but still give fine enough control (IMHO)
+// - s0 is a very commonly used size for body font
+$s-2: 8px;
+$s-1: 11px;
+$s0: 16px;
+$s1: 22px;
+$s2: 32px;
+$s3: 44px;
+$s4: 64;
+$s5: 88px;
+$s6: 128px;
+$s7: 176px;
+$s8: 256px;
+$s9: 352px;
+$s10: 512px;
+// Recommendations:
+// - don't change this scale, unless you have a very good reason
+// - use $s0 as html font size
+// - use $s0 as "standard" padding/margins for most elements
+// - even-numbered sizes (particularly $s0) can also be achieved by multiples of 1rem in in-line styles
+// - these should not be changed, so feel free to use the pixel values in in-line styles
+
+// $s-1 is too small to be easily readable, and this still clearly distinguishes small text
+$small-font-size: 0.8rem;
+
+// Others
+// ----------------------------------------------------------------------------
+// 
+

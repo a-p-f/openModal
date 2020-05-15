@@ -1,0 +1,88 @@
+/*
+    _patterns.scss
+
+    This file contains a bunch of useful "patterns" - groups of styles that
+    achieve a certain affect.
+
+    These are largely just reminders of how to do tricky things, or do things in
+    a more complete/cross browser manner than you might think of.
+
+    Rather than including this file on your site, the idea is to copy/paste these
+    into _components.scss (or any other stylesheet) and modify to your requirements
+    (or copy/paste as inline styles).
+*/
+.no-button {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    height: auto;
+}
+
+
+/* round both ends of an element */
+/* border-radius is always limited to min(height, width), so this works. */
+.pill {
+    border-radius: 1000px;
+    overflow: hidden;
+}
+/* make element fully elliptical */
+/* relative lengths for border radius cause elliptical borders - 100% will create a full ellipse */
+.ellipse {
+    border-radius: 100%;
+    overflow: hidden;
+}
+
+/*
+    Use on inputs (or other elements with default width) that are direct descendants of td/th inside a table with table-layout: auto,
+    if you want the input to expand to the width of the cell (and not influence the width of the column)
+*/
+.cell-width-child {
+    display: block;
+    width: 0px;
+    min-width: 100%;
+}
+
+/* 
+    Use to push footer down. Put on html.
+    Be sure to set flex-grow: 1; on some child of the body.
+*/
+.flex-grow-body {
+    height: 100%;
+
+    /* IE bug workaround */
+    display: flex;
+    flex-direction: column;
+}
+.flex-grow-body body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    /* IE bug workaround */
+    flex-shrink: 0;
+}
+
+/* 
+    WARNING: these DO NOT work in IE (and a few other minor browsers),
+    but they degrade nicely in most layouts.
+*/
+.sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+.sticky-bottom {
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 0;
+}
+
+.zebra > :nth-child(2n+1) {
+    background-color: $grayscale-light-background;
+}
+
+/* long section of text content are easier to read if you force lines to wrap at reasonable length */
+.reading-column {
+    max-width: 40em;
+}

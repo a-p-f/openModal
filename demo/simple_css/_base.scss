@@ -1,0 +1,324 @@
+/*
+    _base.scss
+
+    Default element styles.
+
+    Keep this file organized alphabetically, by selector.
+*/
+
+
+
+// a
+    // Note - we're intentionally NOT nesting these selectors to keep the specificity low
+    // Note - don't style <a> element unless it's also :link (which means href is set)
+    // This is useful for templating/generating items which are only linkable under certain conditions
+    // If you don't add an href, no link style
+    :link {
+        color: $blue;
+    }
+    :visited {
+        color: $purple;
+    }
+blockquote {
+    font-style: italic;
+    @extend %block-margins;
+}
+body {
+    margin: 0;
+}
+button {
+    @extend %form-all-elements;
+    @extend %form-button;
+}
+caption {
+    @extend %small_font;
+    @extend %light_italic;
+    caption-side: bottom;
+    margin-top: 0.5rem;
+}
+dl {
+    @extend %block-margins;
+}
+fieldset {
+    @extend %block-margins;
+    margin-left: 0;
+    margin-right: 0;
+
+    border: 1px solid $grayscale-input-border;
+    /* things inside the fieldset (ie. p) should already have vertical margins, so don't add vertical padding */
+    padding: 0 1rem;
+}
+figcaption {
+    @extend %small_font;
+    @extend %light_italic;
+    margin-top: 0.5rem;   
+}
+figure {
+    /* 
+        Figures - these styles make figures very useful for layout of tables, images, etc.
+        This works best if used in a "column" of reasonable width, and with at least some
+        content that takes up that entire width (ie. lines of text that wrap, perhaps
+        full-width bottom borders on headings).
+        I think that's generally a good idea, anyway.
+
+        I recommend setting width: 100%; on all of your tables in your "content column".
+        (Whether inside figure or not).
+        I recommend using table-layout: fixed; and setting explicit widths for all columns
+        except the last column, and letting that column grow to take up remaining width.
+        This approach just adds a little extra full-width content to your "content column"
+        (namely the row borders).
+    */
+    @extend %block-margins;
+
+    /* Horizontally center children */
+    /* To "disable" this, simply set display: block */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* allow scrolling of wide tables */
+    overflow-x: auto;
+
+    > * {
+        /* This is for img, video, etc. */
+        max-width: 100%;
+    }
+    > table {
+        /* Tables should be centered if they fit, or left aligned and overflowing */
+        max-width: none;
+        align-self: flex-start;
+        margin-left: auto;
+        margin-right: auto;
+
+        /* remove bottom margin, so that figcaption is tight to table */
+        /* You can also use a plain div underneath the table, for something like pagination controls */
+        margin-bottom: 0;   
+    }
+
+}
+// Note - these pixel values match sizes from _variables.scss,
+// but that isn't that important.
+// If you want smaller headers, you can change these values,
+// but you should leave the $sX variables unchanged.
+/*
+    Borders
+
+    Borders on your headings help differentiate your sections even more than different heading sizes.
+    Also, they help provide "full-width" content that fills your container, if you don't have many
+    long lines of text or other wide content.
+
+    Recommendation: customize headings on your site. Use "brand" colors.
+    Not all levels need to be the same (ie. font, color, etc.). Different heading styles just help
+    differentiate sections even better.
+*/
+h1 {
+    font-size: 44px;
+    @extend %big-header-margins;
+}
+h2 {
+    font-size: 2rem;
+    @extend %big-header-margins;
+    border-bottom: 1px solid $grayscale-medium-border;
+}
+h3 {
+    font-size: 22px;
+    @extend %big-header-margins;
+    border-bottom: 1px dotted $grayscale-light-border;
+}
+h4 {
+    font-size: 1rem;
+    @extend %big-header-margins;
+}
+h5 {
+    @extend %small_font;
+    @extend %block-margins;
+}
+h6 {
+    @extend %small_font;
+    @extend %block-margins;
+}
+hr {
+    @extend %block-margins;
+    border: none;
+    border-top: 1px solid $grayscale-medium-border;
+    width: 100%;
+
+}
+html {
+    font-family: $body-font;
+    font-size: $s0;
+    color: $garyscale-normal-text;
+    line-height: 1.6;
+}
+iframe {
+    border: none;
+    margin: none;
+}
+input {
+    @extend %form-all-elements;
+}
+/*
+    Notice - the specificity of these input type selectors is unfortunately high.
+    You cannot override these styles with a single class selector.
+    Recommendation - use a "double class selector" when overriding these styles. IE:
+        .tight-checkbox.tight-checkbox {
+            margin-right: 0;
+        }
+    This counts as two classes in terms of specificity, so will override these.
+*/
+input[type=button] {
+    @extend %form-button;
+}
+input[type=checkbox] {
+    @extend %form-element-height-reset;
+    margin-right: 0.5rem;
+}
+input[type=color] {
+    @extend %text-input-width;
+}
+input[type=date] {
+    @extend %text-input-width;
+}
+input[type=datetime-local] {
+    @extend %text-input-width;
+}
+input[type=email] {
+    @extend %text-input-width;
+}
+input[type=file] {
+    border: none;
+}
+input[type=hidden] {
+    @extend %form-element-height-reset;
+}
+input[type=image] {
+    @extend %form-element-height-reset;
+}
+input[type=month] {
+    @extend %text-input-width;
+}
+input[type=number] {
+    @extend %text-input-width;
+}
+input[type=password] {
+    @extend %text-input-width;
+}
+input[type=radio] {
+    @extend %form-element-height-reset;
+    margin-right: 0.5rem;
+}
+input[type=range] {
+    @extend %text-input-width;
+    @extend %form-element-height-reset;
+}
+input[type=reset] {
+    @extend %form-button;
+}
+input[type=search] {
+    @extend %text-input-width;
+}
+input[type=submit] {
+    @extend %form-button;
+}
+input[type=tel] {
+    @extend %text-input-width;
+}
+input[type=text] {
+    @extend %text-input-width;
+}
+input[type=time] {
+    @extend %text-input-width;
+}
+input[type=url] {
+    @extend %text-input-width;
+}
+input[type=week] {
+    @extend %text-input-width;
+}
+ol {
+    @extend %block-margins;
+}
+p {
+    @extend %block-margins;
+}
+pre {
+    @extend %block-margins;
+}
+select {
+    @extend %form-all-elements;
+    
+    // select should look like buttons, but should not scale while active
+    @extend %form-button;
+    &:active {
+        // Unlike actual 
+        transform: none;
+    }
+
+    &::-ms-expand {
+        display: none;
+    }
+
+    /* TODO - blue square background around down triangle? */
+    // Note - if you include image via url, you get "flicker" on page load, as image is loaded:
+    // background-image: url('./down_triangle.svg');
+    // same image, encoded via https://yoksel.github.io/url-encoder/ - no flicker: 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 12' width='18' height='12'%3E%3Cpolygon style='fill:%23666;' points='0,0 9,12 18,0'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 0.8em;
+    background-position: right 0.3em center;
+    padding-right: 1.4em;
+}
+small {
+    @extend %small_font;
+    @extend %light_italic;
+}
+sub {
+    @extend %small_font;
+}
+sup {
+    @extend %small_font;
+}
+table {
+    @extend %block-margins;
+
+    border-collapse: collapse;
+    border-color: $grayscale-light-border;
+    border-width: 0;
+    border-style: solid;
+}
+tbody {
+    @extend %table-borders;
+    border-bottom-width: 1px;
+}
+td {
+    @extend %table-borders;
+    padding: 0.5rem;
+    border-top-width: 1px;
+}
+textarea {
+    @extend %form-all-elements;
+    @extend %form-element-height-reset;
+    background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+tfoot {
+    @extend %table-borders;
+}
+th {
+    @extend %table-borders;
+    padding: 0.5rem;
+    border-top-width: 1px;
+    font-weight: bold;
+}
+thead {
+    @extend %table-borders;
+}
+tr {
+    @extend %table-borders;
+}
+ul {
+    @extend %block-margins;
+}

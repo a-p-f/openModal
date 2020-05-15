@@ -1,0 +1,3 @@
+# Treat index.css as binary - this is a compiled file - we don't want to see the diff
+index.css -diff
+foo_page.css -diff

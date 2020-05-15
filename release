@@ -1,0 +1,16 @@
+#!/bin/bash
+# Build dist code, tag commit, push 
+# Version number should match what you've described in 
+
+[ $# -ne 1 ] && { echo "Usage: $0 version_number"; exit 1; }
+
+version=$1
+
+./node_modules/.bin/rollup -c rollup.config.dist.js
+
+mv dist/openModal.js dist/openModal-${version}.js
+
+git add -A
+git commit || exit 1;
+git tag v${version}
+git push origin

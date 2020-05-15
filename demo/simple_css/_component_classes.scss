@@ -1,0 +1,120 @@
+/*
+    _components.scss
+
+    These classes are meant to fully encapsulate specific styles/behaviour.
+    Generally, they are intended to be used as the sole class on a given element.
+    Don't think of these as modifying the display properties of existing elements,
+    but rather defining an entirely new element (in terms of display).
+
+    These classes should mostly only alter the styles of the element to which they are applied,
+    though sometimes they will alter basic layout styles of child elements (margins, min/max width, etc).
+
+    Keep this file in alphabetical order
+*/
+
+// Can be used on any element, which would normally be inline. Particularly useful on <label> inside forms.
+// This is useful because we don't want default margins on div, and there is no other block-level element
+// without a specific semantic meaning (and in particular, <p> does _not_ allow any block-level children).
+.block {
+    display: block;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+// Remove fieldset styles (as when wrapping a single group of radios/checkoxes)
+.block-fieldset {
+    border: none;
+    padding: 0;
+    > legend {
+        display: block;
+        padding: 0;
+    }
+}
+
+// Full-cell (td-th) clickable children
+.cell-widget { 
+    // use on <label> or <a> when only child of td/th
+
+    // full-cell width
+    display: block;
+
+    padding: 0.5rem;
+    margin: -0.5rem;
+
+    &:hover {
+        background-color: rgba(0,0,0,0.1); 
+    }
+}
+
+// Make checkbox/radio line up slightly better with text inside label 
+// <label class="checkbox-label"><input type="checkbox"> Banana</label>
+.checkbox-label {
+    display: flex;
+    align-items: center;
+}
+
+/*
+    Content columns - set max width
+
+    content-column and content-column-no-gutter both set max width of content.
+    content-column additionally pads content in on narrow screens - content-column-no-gutter does not.
+    Use content-column for things like text.
+    Use content-column-no-gutter for things like images, maps, etc., if you want them to extend right
+    (you might even use on your header/footer)
+    to the edge of the screen on narrow screens.
+
+    ie.
+    <body>
+        <div class="content-column">
+            Our site is awesome because ...
+        </div>
+        <div class="content-column-no-gutter" id="map">
+        </div>
+    </body>
+
+    Recommendation: override max width and gutter padding as desired on your project.
+*/
+.content-column,
+.content-column-no-gutter {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.content-column {
+    box-sizing: content-box;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+// Use on inline svg icons
+// The svg element should have viewbox defined, so that aspect ratio is maintained
+.icon {
+    // Users can change size by changing font-size of parent element
+    height: 1em;
+    // Note that 1em is considerably taller than the height of a capital letter (ie. caps height)
+    // The vertical align moves the icon down so that it's centered quite nicely next to an "X"
+    // Also, I _think_ this approach has no effect if the element is inside a flexbox, floated, etc. TODO - verify this
+    vertical-align: -0.1em;
+    stroke: currentColor;
+    fill: currentColor;
+}
+
+// <small> only allows phrasing content - use div.small if you want to make multiple block-level elements small/italic
+.small {
+    @extend %small_font;
+    @extend %light_italic;
+}
+
+// Layout group of related buttons/links horizontally
+.widget-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    > * {
+        margin-right: 1rem;
+    }
+}
+
+.zebra-table > tbody > :nth-child(2n+1) {
+    background-color: $grayscale-light-background;
+}

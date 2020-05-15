@@ -1,0 +1,180 @@
+/*
+    Note - this is intended as a "seed". Copy to your project, edit as needed
+    In particular, you may want to edit the media queries.
+
+    Flexible framework for creating a site with an optional fixed header, an optional
+    fixed footer, an optional fixed sidebar (or multiple), and a main scrolling area.
+    
+    Uses flexbox on most browsers, position sticky on mobile browsers where supported
+    (so that the address bar properly shows/hides on scroll). 
+
+    The "mobile sticky" layout does not allow for sticky sidebars. You should only have one
+    visible child inside any SiteRow on mobile (use Site-mobile-hidden on other columns).
+
+    The "mobile sticky" layout has issues with in-page links (targets will be covered by header).
+    Use covered_target_fix.js as a workaraound.
+    The flexbox layout also has issues with in-page links. 
+    Modern browsers seem to navigate these links fine, but don't scroll properly on back/forward
+    (these are definite browser bugs that SHOULD be fixed).
+    If you're using in-page link navigation with the flexbox layout, we recommend that you
+    use location.replace to avoid creating new history entries.
+
+    In the future, I hope mobile browsers will support the flexbox layout better 
+    (with height: 100vh on html instead of 100%), so that we don't need to implement 
+    the sticky layout.
+
+    SiteMain will be the sole scrollable area on the page. It will also grow in height as needed 
+    to push your footer down, if content is short.
+
+    SiteColumn and SiteRow are fairly self explanatory. You can use them in different arrangements
+    to create different layouts. Keep in mind, though, that on mobile you're limited to a single column,
+    with at most one sticky header and at most one sticky footer.
+
+    The SiteHeader and SiteFooter classes only have an effect in the mobile sticky layout.
+    You can remove those classes, and your header/footer will be "stuck" in desktop, but not mobile.
+
+    Nesting rules:
+        There should be exactly 1 SiteMain
+        All parents of SiteMain (up to and including <body>) should either be a SiteColumn or SiteRow
+        A SiteColumn can have (in any order):
+            - 1 SiteRow XOR SiteMain child
+            - arbitray other children
+        A SiteRow can have (in any order):
+            - 1 SiteColumn XOR SiteMain child
+            - arbitrary other children
+
+    Possible layouts:
+    
+        Full width header and footer, left and right sidebars
+        <body class="SiteColumn">
+            <header class="SiteHeader"></header>
+            <div class="SiteRow">
+                <nav class="Site-mobile-hidden"></nav>
+                <main class="SiteMain"></main>
+                <nav class="Site-mobile-hidden">
+                    Right side nav bar, perhaps for in-page table of contents
+                </nav>
+            </div>
+            <footer class="SiteFooter"></footer>
+        </body>
+
+        Full height nav bar (works nicely if you want to "line up" your maint content column with content in your header/footer)
+        Footer only "sticks" on desktop
+        <body class="SiteRow">
+            <nav class="Site-mobile-hidden"></nav>
+            <div class="SiteColumn">
+                <header class="SiteHeader"></header>
+                <main class="SiteMain"></main>
+                <footer>No "SiteFooter" class -> doesn't stick on mobile</footer>
+            </div>
+        </body>
+
+        Full width header, narrow footer (sidebar extends right to bottom of viewport)
+        <body class="SiteColumn">
+            <header class="SiteHeader"></header>
+            <div class="SiteRow">
+                <nav class="Site-mobile-hidden"></nav>
+                <div class="SiteColumn">
+                    <main class="SiteMain"></main>
+                    <footer class="SiteFooter"></footer>
+                </div>
+            </div>
+        </body>
+*/
+
+/* Flex box layout - this the "default" */
+html {
+    /* push footer down - make SiteMain grow to take up space */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.SiteColumn,
+.SiteRow {
+    /* grow to take up space */
+    /* IE needs an explicit flex-basis for this to work */
+    flex: 1 0 0px;
+    display: flex;
+
+    // By default, min width/height for flex items is equal to intrinsic content width/height
+    // We need these so that we can force .SiteMain to overflow
+    min-height: 0;
+}
+.SiteColumn {
+    flex-direction: column;
+}
+.SiteMain {
+    flex: 1 0 0px;
+
+    // By default, min width/height for flex items is equal to intrinsic content width/height
+    // We need these so that we can force .SiteMain to overflow
+    min-height: 0;
+
+    overflow-y: auto;
+    /* Smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch; 
+}
+
+/* Desktop only styles - small enough to include 720p laptops */
+/* 
+    If you reproduce this media query elsewhere on your site, be sure to "tag" it
+    as below, so that you can easily find all places you've used it, if you need to update.
+*/
+/* _site_desktop_query_ */
+@media (min-width: 1100px) and (min-height: 700px) {
+    .Site-desktop-hidden {
+        /* Use important so that they can set display to something else, like flex, and we'll still hide it when appropritate */
+        display: none !important;
+    }
+    /* Use with .column or .gutter-column */
+    /* Don't center - justify left */
+    .column-desktop-left {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+/* Mobile only styles - negate desktop query */
+/* 
+    If you reproduce this media query elsewhere on your site, be sure to "tag" it
+    as below, so that you can easily find all places you've used it, if you need to update.
+*/
+/* _site_mobile_query_ */
+@media not all and (min-width: 1100px) and (min-height: 700px) {
+    .Site-mobile-hidden {
+        /* Use important so that they can set display to something else, like flex, and we'll still hide it when appropritate */
+        display: none !important;
+    }
+
+    /*
+        If the browser supports sticky, use that instead of flexbox layout
+        This is because the flexbox layout doesn't allow the top address bar in the
+        browser to show/hide as the user scrolls.
+        Note that we need to "reset" some of the styles from the flex box layout.
+
+        Imporant - this layout does not support sticky sidebars. It's intended to be used 
+        on mobile, where you don't show the sidebars (and perhaps make that content available
+        via a menu button/overlay).
+
+        Important - this layout creates issues when using in-page links (the target will be covered by the header).
+        You can get around that by using covered_target_fix.js, though.
+    */
+    @supports (position: -webkit-sticky) or (position: sticky) {
+        html,
+        .SiteColumn,
+        .SiteRow {
+            display: block;
+        }
+        .SiteHeader {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+        }
+        .SiteFooter {
+            position: -webkit-sticky;
+            position: sticky;
+            bottom: 0;
+        }
+    }
+}

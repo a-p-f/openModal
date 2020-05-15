@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>openModal Demo</title>
+	<script type="module" src="/src/openModal.js"></script>
+	<script defer nomodule src="/live/openModal.js"></script>
+	<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+	<strong>UNDER CONSTRUCTION</strong>
+	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
+	<p>openModal allows you to easily create accessible, nestable, modal dialogs/windows.</p>
+	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "modal window" over top of your existing page.</p>
+	<p>The modal window has a transparent background, so the document loaded in that window is free to let the parent window show through. All user interaction in the parent window is blocked until the modal window is closed.</p>
+	<p>
+		<button onclick="openModal('basic_features.html')">Try it out</button>
+		<button 
+			id="alert_something" 
+			onclick="alert('This button is a dummy element, which we try to click with javascript from the demo modal. This alert message should NOT appear when you click the test button in the modal window');"
+			style="opacity: 0.5;"
+		>
+			Test Button
+		</button>
+		<br>
+
+		<button onclick="openModal('no_autofocus.html');">
+			Try it out (no <code>autofocus</code> element)
+		</button>
+	</p>
+
+	<p>Our implementation loads the the document in an iframe, but this detail is not exposed in the API. We've designed the API to be as simple as possible, serving one well-defined role. Our hope is that this API may be considered for native implementation on the web.</p>
+
+	<h2>API</h2>
+	<h3><code>openModal(url, [options]) -> undefined</code></h3>
+	<p>Opens a "modal window" over top of the current window, containing the document at the specified url.</p>
+
+	<p>The <code>options</code> argument, if given, must be an object specifying any of these properties:</p>
+	<dl>
+		<dt><code>background: string</code></dt>
+		<dd>A style to use as the modal's background. Generally, you can just set the background style on the <code>&lt;html&gt;</code> or <code>&lt;body&gt;</code> element within your modal. However, if the modal window performs any navigation within itself, you may want to set this value, to ensure that the background persists during navigations. 
+		<br>
+		<small>The two samples below <em>may</em> behave the same in some browsers. Try it in Chrome. Without setting <code>background</code>, you'll see a flicker of the parent window during the child window reload.</small><br>
+
+		<button type="button" onclick="openModal('full_page.html');">Without background</button>
+		<button type="button" onclick="
+			openModal('full_page.html', {background: 'white'});
+		">With iframe background</button>
+		</dd>
+
+		<dt><code>onload: function(window) -> undefined</code></dt>
+		<dd>
+			This callback will be invoked every time the modal window loads. <br>
+			Use it to pass information to the child window. <br>
+			<button onclick="
+				openModal('onload_test.html', {onload: function(w) {
+					w.initialize('foobar');
+				}});
+			">Try it out</button>
+		</dd>
+
+		<dt><code>onclose: function(any) -> undefined</code></dt>
+		<dd>This callback will be invoked when the modal is closed. The argument will be the value that was passed to <code>closeModal()</code> (if given). <br>
+		<button onclick="
+			openModal('onclose_test.html', {
+				onclose: function(value) {
+					console.log('The modal closed');
+					alert('The modal window closed with value '+value);
+				},
+			});">Try it out</button>
+
+			<br><small>TODO: test with a non-serializable value (ie. an html element).</small>
+			<br><small>TODO: test with cross-origin iframe.</small>
+		</dd>
+	</dl>
+
+	<p>Inside the modal window, you must also load openModal.js. In addition to <code>openModal()</code>, the following will be available:</p>
+	<dl>
+		<dt><code>parent</code></dt>
+		<dd>The parent window (which called <code>openModal()</code>). The modal window can also navigate the parent using links with <code>target="_parent"</code>.<br> <small>These are standard features available in any iframe, but we explicitly endorse their use. We suggest that any native implementation of <code>openModal()</code> should also make these features available, even if that implementation does not use iframes.</small></dd>
+		<dt><code>closeModal([value]) -> undefined</code></dt>
+		<dd>Closes the modal window. If given, <code>value</code> will be passed to the <code>onclose</code> callback</dd>
+	</dl>
+
+	<h2>Nesting</h2>
+	<p>Nesting is straightforward, with one caveat. To prevent infinite recursion, browsers block iframes from loading if their src matches the src of any parent iframe. See the "Infinite Recursion" section of the <a href="https://www.w3.org/TR/WD-frames-970331">relevant W3C document</a>.</p>
+	<p>Generally, you won't have a need to open iframes in a cycle like this. If you do, just append a unique querystring to each <code>src</code>, like we do in this demo:<br>
+	<button type="button" onclick="openModal('nestable_alert.html');">Nesting Demo</button>
+	</p>
+
+	<h2>History Support</h2>
+	<h3>Close On Back</h3>
+	<p>When a modal window is open, pressing your browser's back button will try to go back within the modal window. If you are already on the first history entry within the modal, the modal window will be closed.</p>
+
+	<h3>Modal History Cleanup</h3>
+	<p>If you naively create an iframe, navigate within it, and then remove the iframe from your document, something strange happens. The history entries created within the iframe are treated as part of the parent window's history. Removing the iframe does not remove those history entries. From this point, you'll now have to go back multiple entries before you actually cause the parent window to navigate.</p>
+
+	<p><code>openModal</code> keeps track of how many history entries are created in the child window. When you <code>closeModal()</code>, we first execute <code>history.go(-X)</code> before we remove the iframe. This removes the useless history entries, so pressing "back" again does what you'd expect.</p>
+
+	<h3>Demo</h3>
+	<p><a href="historyCleanupTest/">Try out the history test.</a></p>
+
+	<h2><code>target="_modal"</code></h2>
+	<p>Links with <code>target="_modal"</code> will automatically open in a modal window.</p>
+	<p>You should only do this if the linked page makes sense when navigated to directly. As with any standard link, the user will be able to right-click the link and copy the link location, or shift/ctrl/command+click to open in a new window/tab.</p>
+
+	<p><a href="linked_modal.html" target="_modal">Try it out</a></p>
+</body>
+</html>

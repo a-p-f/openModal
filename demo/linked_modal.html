@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<script type="module" src="/src/openModal.js"></script>
+<link rel="stylesheet" href="./style.css">
+<title>Linked Modal</title>
+<body style="background-color: white;">
+
+<h1>Linked Modal</h1>
+
+<p>This window supports "modal opening" and "normal opening".</p>
+
+<p>Notice how we hide the the "Close" button if the user opens this page in a new window/tab. In that case, it's up to the user to use standard browser UI to close the window/tab.</p>
+
+<p>
+	<button id="close" style="display: none;" onclick="closeModal();">Close</button>
+</p>
+
+<script>
+	if (window.parent != window) {
+		document.getElementById('close').style.display = '';
+	}
+</script>

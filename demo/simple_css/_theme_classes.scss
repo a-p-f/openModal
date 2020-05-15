@@ -1,0 +1,53 @@
+/*
+    _theme_classes.scss
+    This file provide's "theme classes".
+    A theme class applies one variable value to one style property of an element.
+    Theme classes follow a strict naming convention: style-property--varibale-name
+    You should only use these classes for one-off situations where a more meaningful "component class" doesn't make sense.
+    
+    We don't necessarily pre-define all possible "theme classes". 
+    You should feel free to add them as needed.
+
+    Keep this file in alphabetical order. 
+*/
+.background-color--blue {background-color: $blue;}
+.background-color--brown {background-color: $brown;}
+.background-color--gray {background-color: $gray;}
+.background-color--green {background-color: $green;}
+.background-color--light-blue {background-color: $light-blue;}
+.background-color--light-brown {background-color: $light-brown;}
+.background-color--light-gray {background-color: $light-gray;}
+.background-color--light-green {background-color: $light-green;}
+.background-color--light-orange {background-color: $light-orange;}
+.background-color--light-pink {background-color: $light-pink;}
+.background-color--light-purple {background-color: $light-purple;}
+.background-color--light-red {background-color: $light-red;}
+.background-color--light-yellow {background-color: $light-yellow;}
+.background-color--orange {background-color: $orange;}
+.background-color--pink {background-color: $pink;}
+.background-color--purple {background-color: $purple;}
+.background-color--red {background-color: $red;}
+.background-color--yellow {background-color: $yellow;}
+
+// Reminder - you can set the color of other properties (ie. border)
+// by setting foreground color and then using the currentColor keyword
+// (ie. <button class="color--red" style="border-color: currentColor;">Delete</button>)
+// Alternatively, you can always write a new theme class for the particular property/value you want to set
+.color--blue {color: $blue;}
+.color--brown {color: $brown;}
+.color--gray {color: $gray;}
+.color--green {color: $green;}
+.color--light-blue {color: $light-blue;}
+.color--light-brown {color: $light-brown;}
+.color--light-gray {color: $light-gray;}
+.color--light-green {color: $light-green;}
+.color--light-orange {color: $light-orange;}
+.color--light-pink {color: $light-pink;}
+.color--light-purple {color: $light-purple;}
+.color--light-red {color: $light-red;}
+.color--light-yellow {color: $light-yellow;}
+.color--orange {color: $orange;}
+.color--pink {color: $pink;}
+.color--purple {color: $purple;}
+.color--red {color: $red;}
+.color--yellow {color: $yellow;}

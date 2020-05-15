@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<h2>Experimental Features</h2>
+
+	<h3>Top Reload</h3>
+	<p>Any user-initiated reload would only reload the top-most window.</p>
+
+	<h3>"Independent" Windows</h3>
+	<p>If window A opens ModalWindow B, then A and B are said to be <dfn>independent</dfn> until A adds any event listeners to B.</p>
+	<p>Some additional features could be added which are only supported for independent windows.</p>
+	<h4>Bottom Reload</h4>
+	<p>If window A is covered by (independent) window B, and window A executes <code>location.reload()</code>, then A will reload and B will remain open.</p>
+	<p>This is useful, for example, if A is a "detail" view and B is a form to edit the object shown in A. B can communicate with A (ie. via <code>window.parent.someGlobalCallback()</code>) whenever the user commits a change, and A can then reload so that it reflects those changes. Or, in a situation this simple, B could directly call <code>window.parent.location.reload()</code> to reload A every time the user commits a change.</p>
+
+	<h2>Tips &amp; Design Patterns</h2>
+
+	<p>You already know everything there is to know about <code>openModal()</code>. What follows is a set of tips/techniques for implementing common design patterns.</p>
+
+
+	<h3>Easy Exit</h3>
+	<p>Close the modal when clicking outside the main "visible element" or by hitting the escape key:<br>
+	<button onclick="openModal('easy_exit.html');">Easy Exit Demo</button>
+
+	<h3>Alert Modal</h3>
+	<p>The alert modal we've been using thus far is very flexible. It requires two wrapper elements inside the body, and you must include <a href="alertModal.css">alertModal.css</a>. Feel free to copy alertModal.css to your own project, and edit to your liking. We've included comments indicating which styles you may want to override.</p>
+	<p>Note that in each of the following demos we actually load the same document, but we mutate the styles within the modal via <code>load</code> listeners. This is for demonstration purposes only. In general, you should leave such styling up to the document you are opening.</p>
+	
+	<button type="button" onclick="openModal('alert.html');">
+		Open Alert Modal</button>
+	<button type="button" onclick="
+		var mw = openModal('alert.html');
+		mw.addEventListener('load', function() {
+			mw.contentWindow.document.documentElement.classList.add('alertModalTopBiased');
+		});
+	">
+		"Top Biased" variant</button>
+	<button type="button" onclick="
+		var mw = openModal('alert.html');
+		mw.addEventListener('load', function() {
+			mw.contentWindow.document.documentElement.style.alignItems = 'center';
+		});
+	">
+		Vertically Centered</button>
+	<button type="button" onclick="
+		var mw = openModal('alert.html');
+		mw.addEventListener('load', function() {
+			var div = mw.contentWindow.document.body.firstElementChild;
+			div.style.width = '800px';
+			div.style.height = '500px';
+		});
+	">
+		Initial Dimensions</button>
+
+	<h2>TODO</h2>
+	<h3>More design patterns</h3>
+	<p>Draggable windows, edge snapping, etc.</p>
+	
+	<h3>Cross Origin Iframes</h3>
+	<p>We plan to support cross origin iframes. The following limitations will apply:</p>
+	<ul>
+		<li>the iframe's document must also include openModal.js</li>
+		<li>any inter-window communication you perform in <code>onload</code> must be limited to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage">postMessage API</a></li>
+		<li>any value passed to <code>closeModal()</code> must serializable by the postMessage API</li>
+	</ul>
+
+	<h3>Cross Browser Testing</h3>
+	<p>'nough said.</p>
+
+	<h3>Opera Mini Support</h3>
+	<p>We rely on <code>position: fixed;</code>. Opera Mini appears to be the only current browser not supporting this (<a href="https://caniuse.com/#feat=css-fixed">https://caniuse.com/#feat=css-fixed</a>).</p>
+	<p>We may be able to implement a fallback using <code>position: absolute;</code> and calculating the required top/left values using <code>iframe.getBoundingClientRect()</code> after initially placing it in the DOM.</p>
+
+	<h3>Smarter Scroll Locking</h3>
+	<p>We use a scoll event listener to lock the document scroll position, rather than setting <code>overflow: hidden;</code> while a modal is open.</p>
+	<p>The latter technique is more efficient, and would prevent any "jitter" while the user scrolls. However, it should not be used if the browser renders scroll bars that take up space in the viewport (showing/hiding scrollbars when opening a modal can be distracting, or even break layouts entirely).</p>
+	<p>We can probably detect, at the time <code>openModal()</code> is called, whether there are currently any "space taking" scrollbars, and use the most appropriate technique.</p>
+
+
+
+
+</body>
+</html>
