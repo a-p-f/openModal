@@ -7,7 +7,6 @@ function isModalChild() {
 addEventListener('message', function(e) {
 	if (e.source != window.parent) return
 	if (e.data == 'MODAL_CLOSE_VALUE_RECEIVED') {
-		console.debug('parent acked value. unwinding...')
 		// Go back to initial state before closing the modal window
 		// In some browsers, this will trigger popstate in our window
 		// (and our popstate listener will call exit())
@@ -100,7 +99,6 @@ function patchPushState() {
 
 // Make sure this is actually a modal child before we do anything
 if (isModalChild()) {
-	console.debug('initializing modal child');
 	/*
 		We need per-window storage on both the history state entry and in sessionStorage.
 
@@ -139,7 +137,6 @@ if (isModalChild()) {
 	patchPushState();
 
 	addEventListener('popstate', function() {
-		console.debug(`popped state in child ${location.href}`);
 		if (!historyStateIsReadableAndHasKey(depthKey)) {
 			exit();
 			return

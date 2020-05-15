@@ -1,7 +1,6 @@
-import {safeGetState} from './utils.js';
+import {lockScroll, releaseScroll} from './lockScroll.js';
 
 let iframe;
-let lockedScrollTop, lockedScrollLeft;
 let previousActiveElement;
 let onModalclose;
 let modalCloseValue;
@@ -15,7 +14,6 @@ addEventListener('message', function(e) {
 		iframe.setAttribute('aria-label', e.data.modalChildTitled);
 	}
 	if ('setModalCloseValue' in e.data) {
-		console.debug('received set close value message');
 		_setOpenModalCloseValue(e.data.setModalCloseValue);
 	}
 	if ('closeModal' in e.data) {
@@ -40,8 +38,8 @@ function closeModal() {
 	if (!iframe) {
 		throw new Error('No modal window is currently open.');
 	}
+	releaseScroll();
 	iframe.parentElement.removeChild(iframe);
-	removeEventListener('scroll', fixScroll);
 	removeEventListener('click', cancel, true);
 	document.body.removeEventListener('focus', refocus_iframe, true); 
 	previousActiveElement && previousActiveElement.focus();
@@ -56,10 +54,8 @@ window.openModal = function(url, options={}) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
 
+	lockScroll();
 	previousActiveElement = document.activeElement;
-	lockedScrollLeft = document.documentElement.scrollLeft;
-	lockedScrollTop = document.documentElement.scrollTop;
-	addEventListener('scroll', fixScroll);
 	addEventListener('click', cancel, true);
 	document.body.addEventListener('focus', refocus_iframe, true);
 
@@ -96,10 +92,6 @@ function createIframe() {
 	i.setAttribute('aria-modal', 'true');
 	document.body.appendChild(i);
 	return i;
-}
-function fixScroll() {
-	document.documentElement.scrollTop = lockedScrollTop;
-	document.documentElement.scrollLeft = lockedScrollLeft;
 }
 function cancel(event) {
 	event.stopPropagation();
