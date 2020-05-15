@@ -1,5 +1,3 @@
 node_modules
-openModal/
 .cache/
-staging/
-dist/
+live/
