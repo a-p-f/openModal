@@ -7,7 +7,6 @@
 	<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-	<strong>UNDER CONSTRUCTION</strong>
 	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
 	<p>openModal allows you to easily create accessible, nestable, modal dialogs/windows.</p>
 	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "modal window" over top of your existing page.</p>
@@ -29,6 +28,9 @@
 	</p>
 
 	<p>Our implementation loads the the document in an iframe, but this detail is not exposed in the API. We've designed the API to be as simple as possible, serving one well-defined role. Our hope is that this API may be considered for native implementation on the web.</p>
+
+	<h2>Installation</h2>
+	<p>Get the <a href="https://github.com/a-p-f/openModal/tree/master/dist">latest release from github</a>. Add it to <em>both</em> the parent window and the child window.</p>
 
 	<h2>API</h2>
 	<h3><code>openModal(url, [options]) -> undefined</code></h3>
