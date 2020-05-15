@@ -4,6 +4,9 @@ function isModalChild() {
 	// TODO - more robust check?
 	return window.parent != window;
 }
+function isIE() {
+	return navigator.userAgent.indexOf("Trident/7.0") > -1
+}
 addEventListener('message', function(e) {
 	if (e.source != window.parent) return
 	if (e.data == 'MODAL_CLOSE_VALUE_RECEIVED') {
@@ -16,7 +19,9 @@ addEventListener('message', function(e) {
 		// IE hack
 		// In some edge cases, the above history unwind will neither fire popstate nor load a new page (even though it does correctly change history entry)
 		// TODO - guard this with an "is IE" check, so we know we aren't using this garbage in other browsers?
-		setTimeout(exit, 200);
+		if (isIE()) {
+			setTimeout(exit, 200);
+		}
 	}
 });
 window.closeModal = function(value) {
@@ -150,7 +155,7 @@ if (isModalChild()) {
 
 			ONLY do this for IE 11. Some browsers (Safari) fire popstate events at initial page load (when reloading from history), and in that case history.state[depthKey] WILL equal lastDepth.
 		*/
-		if (navigator.userAgent.indexOf("Trident/7.0") > -1 && history.state[depthKey] == sessionStorage[depthKey]) {
+		if (isIE() && history.state[depthKey] == sessionStorage[depthKey]) {
 			exit();
 			return
 		}

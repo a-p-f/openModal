@@ -10,5 +10,5 @@
 <div><div style="width: 700px;">
 	<h1>No Autofocus</h1>
 	<p>This document has no <code>autofocus</code> element, so the <code>body</code> will be focused instead. Pressing tab once will focus the first focusable element.</p>
-	<p><button onclick="closeModal();">Close</button></p>
+	<p><button type="button" onclick="closeModal(); event.preventDefault();">Close</button></p>
 </div></div>
