@@ -51,12 +51,24 @@ function closeModal() {
 	onModalclose = null;
 }
 
+function getActiveElement() {
+	let c = document.activeElement;
+	// If the activeElement is an iframe, try to descend into the iframe
+	// If we reach a cross-origin iframe, error will br thrown
+	try {
+		while (c && c.contentDocument && c.contentDocument.activeElement) {
+			c = c.contentDocument.activeElement;
+		}
+	} catch(e) {}
+	return c;
+}
+
 window.openModal = function(url, options={}) {
 	if (iframe) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
 
-	previousActiveElement = document.activeElement;
+	previousActiveElement = getActiveElement();
 	lockedScrollLeft = document.documentElement.scrollLeft;
 	lockedScrollTop = document.documentElement.scrollTop;
 	addEventListener('scroll', fixScroll);
