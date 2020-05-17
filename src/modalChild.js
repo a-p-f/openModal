@@ -1,3 +1,5 @@
+import {safeGetState} from './utils.js';
+
 let depthKey;
 
 function isModalChild() {
@@ -120,7 +122,9 @@ if (isModalChild()) {
 			Push a new state, so that we detect history.back().
 			If we ever get back to the "initial state", we'll close this modal window.
 		*/
-		history.pushState({[depthKey]: 1}, '', location.href);
+		const s = safeGetState() || {};
+		s[depthKey] = 1;
+		history.replaceState(s, '', location.href);
 		sessionStorage[depthKey] = 1;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {
