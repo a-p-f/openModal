@@ -123,9 +123,10 @@ if (isModalChild()) {
 			If we ever get back to the "initial state", we'll close this modal window.
 		*/
 		const s = safeGetState() || {};
-		s[depthKey] = 1;
-		history.replaceState(s, '', location.href);
-		sessionStorage[depthKey] = 1;
+		s[depthKey] = 2;
+		// history.replaceState(s, '', location.href);
+		history.pushState(s, '', location.href);
+		sessionStorage[depthKey] = 2;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {
 		// This page was reloaded from back/forward

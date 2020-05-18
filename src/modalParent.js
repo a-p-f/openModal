@@ -8,6 +8,7 @@ let modalCloseValue;
 let savedState = null;
 // Make sure it's unique, in case we end up being able to read states created in the child modal window
 const BEFORE_MODAL = 'before_openModal'+Date.now();
+const MODAL_OPEN = 'after_openModal'+Date.now();
 
 // listen to messages from child
 addEventListener('message', function(e) {
@@ -28,7 +29,13 @@ addEventListener('message', function(e) {
 	In some browsers (safari), when the modal goes back to it's original history state, the popstate event will be fired in this window.
 */
 addEventListener('popstate', function() {
-	if (iframe && history.state == BEFORE_MODAL) closeModal();
+	if (!iframe) return
+	if (history.state == BEFORE_MODAL) {
+		closeModal();
+	}
+	else if (history.state && history.state[MODAL_OPEN]) {
+		history.back();
+	}
 });
 
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
@@ -62,7 +69,7 @@ window.openModal = function(url, options={}) {
 
 	savedState = history.state;
 	history.replaceState(BEFORE_MODAL, '', location.href);
-	history.pushState({}, '', location.href);
+	history.pushState({[MODAL_OPEN]: true}, '', location.href);
 
 	lockScroll();
 	previousActiveElement = document.activeElement;
