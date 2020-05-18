@@ -5,6 +5,8 @@ let previousActiveElement;
 let onModalclose;
 let modalCloseValue;
 
+let _expectToBeInModalOpenState = false;
+
 let savedState = null;
 // Make sure it's unique, in case we end up being able to read states created in the child modal window
 const BEFORE_MODAL = 'before_openModal'+Date.now();
@@ -22,7 +24,11 @@ addEventListener('message', function(e) {
 		_setOpenModalCloseValue(e.data.setModalCloseValue);
 	}
 	if ('closeModal' in e.data) {
-		closeModal();
+		// closeModal();
+
+		// The child sends us this message when it gets back to MODAL_OPEN state
+		// We could add a check, but _should_ be unnecessary
+		history.back();
 	}
 });
 /*
@@ -33,14 +39,29 @@ addEventListener('popstate', function() {
 	if (history.state == BEFORE_MODAL) {
 		closeModal();
 	}
+	/*
+		In some browsers (safari), when the modal goes back to it's original history state, the popstate event will be fired in this window, not the modal. So we need to handle it here.
+	*/
 	else if (history.state && history.state[MODAL_OPEN]) {
 		history.back();
 	}
+	/*
+		Safari Hack!!!
+		TODO - explain
+		TODO - guard with check? postMessage to child, asking it to check state, verify that it's depth == 1, then go back?
+	*/
+	else if (history.state === null && _expectToBeInModalOpenState) {
+		history.back();
+	}
 });
+addEventListener('popstate', function() {
+	_expectToBeInModalOpenState = false;
+})
 
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
 window._setOpenModalCloseValue = function(value) {
 	modalCloseValue = value;
+	_expectToBeInModalOpenState = true;
 	// Tell the child window to unwind its history
 	// It will be closed AFTER history unwinds
 	iframe.contentWindow.postMessage('MODAL_CLOSE_VALUE_RECEIVED', '*');
