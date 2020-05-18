@@ -16,6 +16,7 @@ addEventListener('message', function(e) {
 		// In some browsers, this will trigger popstate in our window
 		// (and our popstate listener will call exit())
 		// In other browsers, this will cause a popstate event in the parent window
+		console.log('unwinding');
 		history.go(-1 * parseInt(sessionStorage[depthKey]));
 
 		// IE hack
@@ -43,7 +44,13 @@ window.closeModal = function(value) {
 		}, '*');
 	}
 }
+let didExit = false;
 function exit() {
+	// Guard against running multiple times
+	// (we have a fallback timeout for)
+	if (didExit) return
+	didExit = true;
+	console.log('telling parent to destroy us');
 	window.parent.postMessage({
 		closeModal: true,
 	}, '*');
@@ -119,15 +126,15 @@ if (isModalChild()) {
 		/*
 			The modal window has just been opened.
 			We are in the "initial state".
-			Push a new state, so that we detect history.back().
+			Push a new state, so that we can detect history.back().
 			If we ever get back to the "initial state", we'll close this modal window.
 		*/
 		// const s = safeGetState() || {};
 		const s = {};
-		s[depthKey] = 1;
+		s[depthKey] = 2;
 		// history.replaceState(s, '', location.href);
 		history.pushState(s, '', location.href);
-		sessionStorage[depthKey] = 1;
+		sessionStorage[depthKey] = 2;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {
 		// This page was reloaded from back/forward
