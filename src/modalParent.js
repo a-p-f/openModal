@@ -28,7 +28,6 @@ window._setOpenModalCloseValue = function(value) {
 }
 function closeChild() {
 	iframe.remove();
-	// history.back();
 	history.replaceState(saved_state, '', location.href);
 	releaseScroll();
 	onclose_callback(onclose_value);
@@ -54,7 +53,6 @@ window.openModal = function(url, {
 	saved_state = history.state;
 	history.replaceState('PLACEHOLDER', '', location.href);
 	// TODO - special marker state, closeChild() only goes back() if in this state?
-	// history.pushState(history.state, '', location.href);
 	lockScroll();
 	onclose_callback = onclose;
 	onclose_value = undefined;
