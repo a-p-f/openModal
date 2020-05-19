@@ -32,7 +32,7 @@ function closeChild() {
 	history.replaceState(saved_state, '', location.href);
 	releaseScroll();
 	onclose_callback(onclose_value);
-	onclose_resolve(onclose_value);
+	onclose_resolve && onclose_resolve(onclose_value);
 }
 
 /*

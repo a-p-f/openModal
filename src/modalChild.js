@@ -12,6 +12,18 @@ addEventListener('message', function(e) {
 	if (e.data == 'MODAL_CLOSE_VALUE_RECEIVED') {
 		// Go back to initial state before closing the modal window
 		history.go(-1 * parseInt(sessionStorage[depthKey]));
+
+		/*
+			IE hack
+			The above history navigation will _sometimes_ neither cause a new page to load nor fire a popstate event in any window.
+
+			Seems to only happen if you open a modal, then run location.reload() inside that modal, and then try closing.
+
+			Reminder - we don't want to call tellParentToCloseUs immediately, because we want to make sure history unwinds before the iframe is removed.
+		*/
+		if (isIE()) {
+			setTimeout(tellParentToCloseUs, 200);
+		}
 	}
 });
 window.closeModal = function(value) {
@@ -29,7 +41,11 @@ window.closeModal = function(value) {
 		}, '*');
 	}
 }
+
+let _alreadyToldParentToCloseUs = false;
 function tellParentToCloseUs() {
+	if (_alreadyToldParentToCloseUs) return
+	_alreadyToldParentToCloseUs = true;
 	window.parent.postMessage({
 		closeModalChild: true,
 	}, '*');
