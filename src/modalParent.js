@@ -27,6 +27,7 @@ window._setOpenModalCloseValue = function(value) {
 }
 function closeChild() {
 	iframe.remove();
+	history.back();
 	onclose_callback(onclose_value);
 }
 
@@ -45,6 +46,10 @@ window.openModal = function(url, {
 	if (iframe.iframe) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
+
+	// TODO - special marker state, closeChild() only goes back() if in this state?
+	history.pushState(history.state, '', location.href);
+
 	onclose_callback = onclose;
 	onclose_value = undefined;
 	iframe.create(url, background, onload);
