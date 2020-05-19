@@ -93,9 +93,9 @@ function patchPushState() {
 // Make sure this is actually a modal child before we do anything
 if (isModalChild()) {
 	/*
-		We need per-window storage on both the history state entry and in sessionStorage.
+		We need per-window storage in sessionStorage.
 
-		For same-domain iframes, these are shared between iframe and parent window (in some browsers, at least). We need a persistent, unique key to identify this window. We use window name for that key.
+		For same-domain iframes, sessionStorage is shared between iframe and parent window (in some browsers, at least). We need a persistent, unique key to identify this window. We use window name for that key.
 	*/
 	window.name = window.name || 'openModalWindow'+Date.now();
 

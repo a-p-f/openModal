@@ -29,6 +29,9 @@ function closeChild() {
 	onclose_manager.run();
 }
 
+/*
+	The only reason this is here is in case the page uses pushState, then opens a modal window, then the user uses the browser's back button drop down to go back multiple entries at once.
+*/
 addEventListener('popstate', function() {
 	if (iframe.iframe) closeChild();
 });
@@ -41,13 +44,6 @@ window.openModal = function(url, {
 	if (iframe.iframe) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
-
-	// savedState = history.state;
-	// history.replaceState(BEFORE_MODAL, '', location.href);
-	// Create a new empty state
-	// We can't attach anything useful to this state, because some browsers, under some conditions, won't let us read it. 
-	// It's the same state in which the modal window loads, and it's as if the modal window assumes ownership of this state, so we can't always read it.
-	// history.pushState({}, '', location.href);
 	onclose_manager.setCallback(onclose);
 	iframe.create(url, background, onload);
 }
