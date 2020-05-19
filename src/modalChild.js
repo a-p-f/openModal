@@ -37,8 +37,6 @@ window.closeModal = function(value) {
 	try {
 		window.parent._setOpenModalCloseValue(value);
 	} catch(e) {
-		// TODO - add test/ensure that this will reach the parent before popstate event (in browsers where the popstate event fires on the parent)
-		// Maybe we should just until parent acknowledges message?
 		window.parent.postMessage({
 			setModalCloseValue: value,
 		}, '*');
@@ -52,7 +50,7 @@ function exit() {
 	didExit = true;
 	console.log('telling parent to destroy us');
 	window.parent.postMessage({
-		closeModal: true,
+		backedOutOfModalHistory: true,
 	}, '*');
 }
 function prepareChildDocument() {
@@ -131,10 +129,10 @@ if (isModalChild()) {
 		*/
 		// const s = safeGetState() || {};
 		const s = {};
-		s[depthKey] = 2;
-		// history.replaceState(s, '', location.href);
-		history.pushState(s, '', location.href);
-		sessionStorage[depthKey] = 2;
+		s[depthKey] = 1;
+		history.replaceState(s, '', location.href);
+		// history.pushState(s, '', location.href);
+		sessionStorage[depthKey] = 1;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {
 		// This page was reloaded from back/forward
