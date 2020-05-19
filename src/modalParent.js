@@ -28,6 +28,7 @@ window._setOpenModalCloseValue = function(value) {
 function closeChild() {
 	iframe.remove();
 	history.back();
+	releaseScroll();
 	onclose_callback(onclose_value);
 	onclose_resolve(onclose_value);
 }
@@ -50,7 +51,7 @@ window.openModal = function(url, {
 
 	// TODO - special marker state, closeChild() only goes back() if in this state?
 	history.pushState(history.state, '', location.href);
-
+	lockScroll();
 	onclose_callback = onclose;
 	onclose_value = undefined;
 	iframe.create(url, background, onload);
