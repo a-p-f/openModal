@@ -1,7 +1,7 @@
 import * as iframe from './iframe.js';
 import {lockScroll, releaseScroll} from './lockScroll.js';
 
-let onclose_callback, onclose_value;
+let onclose_callback, onclose_value, onclose_resolve;
 
 // listen to messages from child
 addEventListener('message', function(e) {
@@ -29,6 +29,7 @@ function closeChild() {
 	iframe.remove();
 	history.back();
 	onclose_callback(onclose_value);
+	onclose_resolve(onclose_value);
 }
 
 /*
@@ -53,4 +54,11 @@ window.openModal = function(url, {
 	onclose_callback = onclose;
 	onclose_value = undefined;
 	iframe.create(url, background, onload);
+
+	// Return a promise, but only if Promise() is implemented in browser
+	try {
+		return new Promise((resolve, reject) => {
+			onclose_resolve = resolve;
+		});
+	} catch (e) {}
 }
