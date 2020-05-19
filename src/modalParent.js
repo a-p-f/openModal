@@ -1,6 +1,7 @@
 import * as iframe from './iframe.js';
 import {lockScroll, releaseScroll} from './lockScroll.js';
-import * as onclose_manager from './onclose.js';
+
+let onclose_callback, onclose_value;
 
 // listen to messages from child
 addEventListener('message', function(e) {
@@ -20,13 +21,13 @@ addEventListener('message', function(e) {
 });
 // same origin children will call this directly, allowing them to pass any value, not just serializable ones
 window._setOpenModalCloseValue = function(value) {
-	onclose_manager.setValue(value);
+	onclose_value = value;
 	// Tell the child window to unwind its history
 	iframe.iframe.contentWindow.postMessage('MODAL_CLOSE_VALUE_RECEIVED', '*');
 }
 function closeChild() {
 	iframe.remove();
-	onclose_manager.run();
+	onclose_callback(onclose_value);
 }
 
 /*
@@ -44,6 +45,7 @@ window.openModal = function(url, {
 	if (iframe.iframe) {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
-	onclose_manager.setCallback(onclose);
+	onclose_callback = onclose;
+	onclose_value = undefined;
 	iframe.create(url, background, onload);
 }
