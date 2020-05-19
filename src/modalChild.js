@@ -1,5 +1,3 @@
-import {safeGetState} from './utils.js';
-
 let depthKey;
 
 function isModalChild() {
@@ -13,18 +11,7 @@ addEventListener('message', function(e) {
 	if (e.source != window.parent) return
 	if (e.data == 'MODAL_CLOSE_VALUE_RECEIVED') {
 		// Go back to initial state before closing the modal window
-		// In some browsers, this will trigger popstate in our window
-		// (and our popstate listener will call exit())
-		// In other browsers, this will cause a popstate event in the parent window
-		console.log('unwinding');
 		history.go(-1 * parseInt(sessionStorage[depthKey]));
-
-		// IE hack
-		// In some edge cases, the above history unwind will neither fire popstate nor load a new page (even though it does correctly change history entry)
-		// TODO - guard this with an "is IE" check, so we know we aren't using this garbage in other browsers?
-		if (isIE()) {
-			setTimeout(exit, 200);
-		}
 	}
 });
 window.closeModal = function(value) {
@@ -42,13 +29,7 @@ window.closeModal = function(value) {
 		}, '*');
 	}
 }
-let didExit = false;
-function exit() {
-	// Guard against running multiple times
-	// (we have a fallback timeout for)
-	if (didExit) return
-	didExit = true;
-	console.log('telling parent to destroy us');
+function tellParentToCloseUs() {
 	window.parent.postMessage({
 		closeModalChild: true,
 	}, '*');
@@ -127,10 +108,8 @@ if (isModalChild()) {
 			Push a new state, so that we can detect history.back().
 			If we ever get back to the "initial state", we'll close this modal window.
 		*/
-		// const s = safeGetState() || {};
 		const s = {};
 		s[depthKey] = 1;
-		// history.replaceState(s, '', location.href);
 		history.pushState(s, '', location.href);
 		sessionStorage[depthKey] = 1;
 	}
@@ -147,27 +126,28 @@ if (isModalChild()) {
 	}
 	else {
 		// User navigated back to initial state (and that navigation involved actual page navigation, not just states created with pushState)
-		exit();
+		tellParentToCloseUs();
 	}
 
 	patchPushState();
 
 	addEventListener('popstate', function() {
 		if (!historyStateIsReadableAndHasKey(depthKey)) {
-			exit();
+			tellParentToCloseUs();
 			return
 		}
 
 		/*
 			IE hack
 			IE _sometimes_ lies to us about what state we're in, when we've gone back to the initial state.
+			(Only seems to happen if we navigate to new page, then go back to first page, then go back to initial state).
 
 			If we get a popstate event and history.state[depthKey] hasn't changed, assume we're in the initial state and IE is lying to us.
 
 			ONLY do this for IE 11. Some browsers (Safari) fire popstate events at initial page load (when reloading from history), and in that case history.state[depthKey] WILL equal lastDepth.
 		*/
 		if (isIE() && history.state[depthKey] == sessionStorage[depthKey]) {
-			exit();
+			tellParentToCloseUs();
 			return
 		}
 
