@@ -3,7 +3,7 @@ let previousActiveElement;
 export let iframe;
 
 export function create(url, background, onload) {
-	previousActiveElement = document.activeElement;
+	previousActiveElement = getActiveElement();
 	addEventListener('click', cancel, true);
 	document.body.addEventListener('focus', refocus_iframe, true);
 
@@ -53,4 +53,15 @@ function cancel(event) {
 }
 function refocus_iframe() {
 	if (document.activeElement != iframe) iframe.focus();
+}
+function getActiveElement() {
+	let c = document.activeElement;
+	// If the activeElement is an iframe, try to descend into the iframe
+	// If we reach a cross-origin iframe, error will be thrown
+	try {
+		while (c && c.contentDocument && c.contentDocument.activeElement) {
+			c = c.contentDocument.activeElement;
+		}
+	} catch(e) {}
+	return c;
 }
