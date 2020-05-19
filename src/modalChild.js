@@ -50,7 +50,7 @@ function exit() {
 	didExit = true;
 	console.log('telling parent to destroy us');
 	window.parent.postMessage({
-		backedOutOfModalHistory: true,
+		closeModalChild: true,
 	}, '*');
 }
 function prepareChildDocument() {
@@ -130,8 +130,8 @@ if (isModalChild()) {
 		// const s = safeGetState() || {};
 		const s = {};
 		s[depthKey] = 1;
-		history.replaceState(s, '', location.href);
-		// history.pushState(s, '', location.href);
+		// history.replaceState(s, '', location.href);
+		history.pushState(s, '', location.href);
 		sessionStorage[depthKey] = 1;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {

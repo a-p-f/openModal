@@ -2,13 +2,6 @@ import * as iframe from './iframe.js';
 import {lockScroll, releaseScroll} from './lockScroll.js';
 import * as onclose_manager from './onclose.js';
 
-let savedState = null;
-const BEFORE_OPEN = 'BEFORE_OPENMODAL';
-
-// let expectToBeInBeforeModalState = false;
-
-
-
 // listen to messages from child
 addEventListener('message', function(e) {
 	const i = iframe.iframe;
@@ -21,7 +14,7 @@ addEventListener('message', function(e) {
 	if ('setModalCloseValue' in e.data) {
 		_setOpenModalCloseValue(e.data.setModalCloseValue);
 	}
-	if ('backedOutOfModalHistory' in e.data) {
+	if ('closeModalChild' in e.data) {
 		closeChild();
 	}
 });
@@ -29,7 +22,6 @@ addEventListener('message', function(e) {
 window._setOpenModalCloseValue = function(value) {
 	onclose_manager.setValue(value);
 	// Tell the child window to unwind its history
-	// We will close it AFTER history unwinds
 	iframe.iframe.contentWindow.postMessage('MODAL_CLOSE_VALUE_RECEIVED', '*');
 }
 function closeChild() {
@@ -38,11 +30,7 @@ function closeChild() {
 }
 
 addEventListener('popstate', function() {
-	if (!iframe.iframe) return
-	// If we receive popstate event while iframe is open, it must mean the user backed right out of iframe history
-
-	// problem: child might have it's own modal, and THAT one should be popped
-	closeChild();
+	if (iframe.iframe) closeChild();
 });
 
 window.openModal = function(url, {
@@ -59,7 +47,7 @@ window.openModal = function(url, {
 	// Create a new empty state
 	// We can't attach anything useful to this state, because some browsers, under some conditions, won't let us read it. 
 	// It's the same state in which the modal window loads, and it's as if the modal window assumes ownership of this state, so we can't always read it.
-	history.pushState({}, '', location.href);
+	// history.pushState({}, '', location.href);
 	onclose_manager.setCallback(onclose);
 	iframe.create(url, background, onload);
 }
