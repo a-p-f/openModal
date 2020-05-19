@@ -2,6 +2,7 @@ import * as iframe from './iframe.js';
 import {lockScroll, releaseScroll} from './lockScroll.js';
 
 let onclose_callback, onclose_value, onclose_resolve;
+let saved_state;
 
 // listen to messages from child
 addEventListener('message', function(e) {
@@ -27,7 +28,8 @@ window._setOpenModalCloseValue = function(value) {
 }
 function closeChild() {
 	iframe.remove();
-	history.back();
+	// history.back();
+	history.replaceState(saved_state, '', location.href);
 	releaseScroll();
 	onclose_callback(onclose_value);
 	onclose_resolve(onclose_value);
@@ -49,8 +51,10 @@ window.openModal = function(url, {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
 
+	saved_state = history.state;
+	history.replaceState('PLACEHOLDER', '', location.href);
 	// TODO - special marker state, closeChild() only goes back() if in this state?
-	history.pushState(history.state, '', location.href);
+	// history.pushState(history.state, '', location.href);
 	lockScroll();
 	onclose_callback = onclose;
 	onclose_value = undefined;

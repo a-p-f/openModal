@@ -114,7 +114,7 @@ if (isModalChild()) {
 		sessionStorage[depthKey] = 1;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {
-		// This page was reloaded from back/forward
+		// This page was reloaded from back/forward/reload
 		sessionStorage[depthKey] = history.state[depthKey];
 	}
 	else if (didNavigateForward()) {
