@@ -16,7 +16,6 @@ export default [
     plugins: [
       babel(), 
       terser({
-        comments: '/^!/',
       })
     ],
   },
