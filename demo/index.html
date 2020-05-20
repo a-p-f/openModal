@@ -13,7 +13,8 @@
 	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
 	<p>openModal allows you to easily create accessible, nestable, modal dialogs/windows.</p>
 	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "modal window" over top of your existing page.</p>
-	<p>The modal window has a transparent background, so the document loaded in that window is free to let the parent window show through. All user interaction in the parent window is blocked until the modal window is closed.</p>
+	<p>The modal covers the entire opening window, and has a transparent background. The document inside the modal window is in full control of its own position/style/animation. It may fully cover/occlude the opening window, or render only a small "pop-up" window.</p>
+	<p>All user interaction in the parent window is blocked until the modal window is closed.</p>
 	<p>
 		<button onclick="openModal('basic_features.html')">Try it out</button>
 		<button 
@@ -110,8 +111,18 @@
 	<p><a href="linked_modal.html" target="_modal">Try it out</a></p>
 
 	<h2>Browser Support</h2>
-	
-	<p></p>
+	<p>We use <code>position: fixed</code>, which will not work in Opera Mini.</p>
+	<p>Other than Opera Mini, we aim to support all modern browsers. Currently tested on:</p>
+	<ul>
+		<li>Safari 13.0.5</li>
+		<li>Firefox 70.0</li>
+		<li>Chrome 81.0.4044.129</li>
+		<li>IE 11.719.18362.0</li>
+	</ul>
+	<p><small>TODO: more extensive browser testing <br>TODO: drop <code>position: fixed</code> requirement and support Opera Mini?</small></p>
+
+	<h2>Feedback</h2>
+	<p>Have any questions, suggestions, or concerns? Feel free to <a href="https://github.com/a-p-f/openModal/issues/new">create an issue on our issue tracker</a> for any type of feedback.</p>
 
 </body>
 </html>
