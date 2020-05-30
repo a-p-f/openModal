@@ -1,3 +1,8 @@
+/*
+	TODO - increase depth on hashchange
+	- if going back (history.state is already set), just restore session depth
+*/
+
 let depthKey;
 
 function isModalChild() {

@@ -2,6 +2,23 @@
 <html>
 <head>
 	<title>openModal Demo</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<!-- 
+		"smart menu" and automatic table of contents
+	 -->
+	<link rel="stylesheet" href="AutoPage/AutoPage.css">
+	<script defer src="AutoPage/AutoMenu.js"></script>
+	<script defer src="AutoPage/AutoToc.js"></script>
+	<!-- 
+		Hide document until the above scripts are done executing.
+		Prevents any jarring flicker/reflow as they mutate the DOM.
+	 -->
+	<link rel="stylesheet" href="AutoPage/unhide.css">
+	<script defer src="AutoPage/unhide.js"></script>
+
 	<script type="module" src="/src/openModal.js"></script>
 	<script defer nomodule src="/live/openModal.js"></script>
 	<link rel="stylesheet" href="./style.css">
@@ -10,7 +27,16 @@
 	</script>
 </head>
 <body>
-	<h1>openModal - A New Concept For Modal Dialogs/Windows</h1>
+	<aside id="AutoMenu">
+		<nav class="AutoToc"></nav>
+		<hr>
+		<p>
+			<img src="github_icon.png" style="height: 1em; vertical-align: -2px;" alt=""> 
+			<a href="https://github.com/a-p-f/openModal">View On Github</a>
+		</p>
+	</aside>
+
+	<h1>openModal - A New Concept For Modal Windows</h1>
 	<p>openModal allows you to easily create accessible, nestable, modal dialogs/windows.</p>
 	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "modal window" over top of your existing page.</p>
 	<p>The modal covers the entire opening window, and has a transparent background. The document inside the modal window is in full control of its own position/style/animation. It may fully cover/occlude the opening window, or render only a small "pop-up" window.</p>
@@ -120,6 +146,12 @@
 		<li>IE 11.719.18362.0</li>
 	</ul>
 	<p><small>TODO: more extensive browser testing <br>TODO: drop <code>position: fixed</code> requirement and support Opera Mini?</small></p>
+
+	<h2>TODO</h2>
+	<ul>
+		<li>demonstrate animations</li>
+		<li>provide helper stylesheets/scripts for implementing common "types" of modals</li>
+	</ul>
 
 	<h2>Feedback</h2>
 	<p>Have any questions, suggestions, or concerns? Feel free to <a href="https://github.com/a-p-f/openModal/issues/new">create an issue on our issue tracker</a> for any type of feedback.</p>
