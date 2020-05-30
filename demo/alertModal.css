@@ -8,7 +8,7 @@
 		- scrolls within the window, 
 			rather than moving the entire window in the viewport
 
-	Requires on div, with class AlertWindow wrapping all content of the body
+	Requires one div, with class AlertWindow wrapping all content of the body
 
 	Most styles should not be overridden, except where indicated.
 */
@@ -46,13 +46,13 @@ body {
 	background-color: white;
 
 	/*
-		Feel free to set explicit width/height - either absolute or relative
-		These will be treated as "initial" width/height -
-		the window will still be limited by viewport and body padding
+		You need to set an "initial" width.
+		Can use absolute or relative units.
+		This is more like a max width - the width will shrink as necessary on small screens.
 	*/
 	width: 700px;
-	height: auto;
 	max-width: 100%; 
+	height: auto;
 	box-sizing: border-box;
 	overflow: auto;
 
@@ -60,25 +60,4 @@ body {
 		You could add top/bottom padding, too, but we prefer to set top/bottom margin on child elements
 	*/
 	padding: 0 1rem;
-}
-
-/* 
-	Add this class to <html> to get a window which is in between vertically-centered and fixed at the top
-*/
-.alertModalTopBiased {
-	align-items: stretch;
-}
-.alertModalTopBiased>body:before {
-	content: ' ';
-	display: block;
-	flex-grow: 1;
-}
-.alertModalTopBiased>body:after {
-	content: ' ';
-	display: block;
-	/* 
-		If this was set to 1, the window would always be centered vertically 
-		If it was infinite, the window would be fixed to top of viewport, regardless of height
-	*/
-	flex-grow: 4;
 }

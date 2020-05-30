@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<script type="module" src="/src/openModal.js"></script>
+<script defer nomodule src="/live/openModal.js"></script>
+<link rel="stylesheet" href="alertModal.css">
+<link rel="stylesheet" href="style.css">
+<title>Alert Modal</title>
+<body>
+<div class="AlertWindow">
+	<button 
+		type="button"
+		onclick="closeModal();" 
+		autofocus
+		style="
+			float: right; 
+			margin-top: 1rem;
+			position: sticky;
+			top: 1rem;
+		"
+	>Close</button>
+
+	<h1>Alert Modal</h1>
+		
+	<p>Resize your browser window, and see that this modal window maintains a minimum margin around it, shrinking as needed.</p>
+
+	<p>Note that content of the modal will scroll vertically, if it overflows. Feel free to expand the following <code>textarea</code>, so see how the window looks with a larger content area.</p>
+
+	<p><textarea style="width: 100%; resize: vertical;"></textarea></p>
+</div>

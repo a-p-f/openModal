@@ -37,9 +37,9 @@
 	</aside>
 
 	<h1>openModal - A New Concept For Modal Windows</h1>
-	<p>openModal allows you to easily create accessible, nestable, modal dialogs/windows.</p>
+	<p><small>Accessible &mdash; Nestable &mdash; Customizable &mdash; Dead simple API</small></p>
 	<p>Think of <code>openModal(url)</code> as an alternative to <code>window.open(url)</code>. Instead of opening a new tab or pop-up window, it opens a "modal window" over top of your existing page.</p>
-	<p>The modal covers the entire opening window, and has a transparent background. The document inside the modal window is in full control of its own position/style/animation. It may fully cover/occlude the opening window, or render only a small "pop-up" window.</p>
+	<p>The modal covers the entire opening window, and has a transparent background. The document inside the modal window is in full control of its own position/style/animation. It may fully cover the opening window, render a semi-transparent background, or render only a small "alert style" window.</p>
 	<p>All user interaction in the parent window is blocked until the modal window is closed.</p>
 	<p>
 		<button onclick="openModal('basic_features.html')">Try it out</button>
@@ -50,8 +50,6 @@
 		>
 			Test Button
 		</button>
-		<br>
-
 		<button onclick="openModal('no_autofocus.html');">
 			Try it out (no <code>autofocus</code> element)
 		</button>
@@ -63,7 +61,7 @@
 	<p>Get the <a href="https://github.com/a-p-f/openModal/tree/master/dist">latest release from github</a>. Add it to <em>both</em> the parent window and the child window.</p>
 
 	<h2>API</h2>
-	<h3><code>openModal(url, [options]) -> undefined</code></h3>
+	<h3><code>openModal(url, [options]) -> Promise</code></h3>
 	<p>Opens a "modal window" over top of the current window, containing the document at the specified url.</p>
 
 	<p>The <code>options</code> argument, if given, must be an object specifying any of these properties:</p>
@@ -104,6 +102,11 @@
 		</dd>
 	</dl>
 
+	<h4>Returned Promise</h4>
+	<p><em>If the browser supports <code>Promise</code></em>, then <code>openModal()</code> will return a promise. This promise will be resolved with the same value that is passed to <code>onclose()</code>.</p>
+
+	<p>This promise doesn't enable anything you can't already achieve with <code>onclose</code>, but it can be more convenient to use. If you want to use this feature in browsers which don't support the Promise constructor, you will need to supply a polyfill.</p>
+
 	<h3>Modal Window Properties</h3>
 	<p>Inside the modal window, you must also load openModal.js. In addition to <code>openModal()</code>, the following will be available:</p>
 	<dl>
@@ -139,11 +142,17 @@
 
 	<p><a href="linked_modal.html" target="_modal">Try it out</a></p>
 
-	<h2>Animations</h2>
-	<p><code>openModal()</code> does <em>not</em> provide support for animations. It is our belief that animations should be implemented <em>within</em> the modal window, keeping the responsibilities of <code>openModal()</code> narrow and well defined.<p>
+	<h2>Modal Positioning/Animations</h2>
+	<p><code>openModal()</code> does <em>not</em> provide any options for positioning/animating the modal window. These features must be implemented <em>within</em> the modal window. This keeps the responsibilities of <code>openModal()</code> narrow and well defined, and leaves developers free to use any standard javascript/css techniques for laying out content within the modal window.<p>
+
+	<h3>Alert Window</h3>
+	<p>The "alert" style modal we've been using is implemented with a fairly simple stylesheet: <a href="alertModal.css">alertModal.css</a>. All you need to do is include the stylesheet, and wrap all body content in <code>&lt;div class="AlertWindow"&gt;</code>. <br><button onclick="openModal('alert_modal.html');">Alert Modal</button></p>
+
+	<h3>Animations</h3>
 
 	<p>
-		<button onclick="openModal('slide_down.html');">This modal</button> demonstrates how you can easily add animations inside modal window.
+		The following modal demonstrates how you can easily add animations inside modal window. <br>
+		<button onclick="openModal('slide_down.html');">Slide-down Modal</button> 
 	</p>
 
 	<h2>Browser Support</h2>
@@ -157,14 +166,8 @@
 	</ul>
 	<p><small>TODO: more extensive browser testing <br>TODO: drop <code>position: fixed</code> requirement and support Opera Mini?</small></p>
 
-	<h2>TODO</h2>
-	<ul>
-		<li>demonstrate animations</li>
-		<li>provide helper stylesheets/scripts for implementing common "types" of modals</li>
-	</ul>
-
-	<h2>Feedback</h2>
-	<p>Have any questions, suggestions, or concerns? Feel free to <a href="https://github.com/a-p-f/openModal/issues/new">create an issue on our issue tracker</a> for any type of feedback.</p>
+	<h2>Contact</h2>
+	<p>Have any questions, suggestions, or concerns? Feel free to <a href="https://github.com/a-p-f/openModal/issues/new">create an issue on our issue tracker</a>, or email me directly at <a href="mailto:alex.p.fischer.81@gmail.com">alex.p.fischer.81@gmail.com</a>.</p>
 
 </body>
 </html>
