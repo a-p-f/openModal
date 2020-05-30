@@ -2,13 +2,13 @@
 	alertModal.css
 	Implements a "window" which:
 		- is centered horizontally in the viewport
-		- grows as needed to fit content
+		- grows as needed (vertically) to fit content
 		- supports a "minimum margin" around the window
 		- supports a border and border radius
 		- scrolls within the window, 
 			rather than moving the entire window in the viewport
 
-	Requires to divs wrapping all content of the body
+	Requires on div, with class AlertWindow wrapping all content of the body
 
 	Most styles should not be overridden, except where indicated.
 */
@@ -21,6 +21,8 @@ html {
 	/*align-items: center;*/
 }
 body {
+	/* Use padding, not margin, on this element to create margin around the inner window */
+	margin: 0 !important;
 	/* 
 		sets minimum gap between the "Alert Window" and the viewport boundary 
 		feel free to override
@@ -28,15 +30,13 @@ body {
 	*/
 	padding: 15px;
 
-	margin: 0;
 	box-sizing: border-box;
 	max-width: 100%;
 	max-height: 100%;
 	display: flex;
 	flex-direction: column;
 }
-/* This element implements the scrolling mechanism and border */
-body > div {
+.AlertWindow {
 	/*
 		Feel free to override any of these
 	*/
@@ -50,47 +50,16 @@ body > div {
 		These will be treated as "initial" width/height -
 		the window will still be limited by viewport and body padding
 	*/
-	width: auto;
+	width: 700px;
 	height: auto;
-
-
-	/* 
-		padding-right will work if it does not have overflow,
-		it will do NOTHING if it does have overflow
-		padding-right does not work on this element if it  
-	*/
-	padding-right: 0 !important;
-	margin: 0;
-	padding: 0;
-	max-width: 100%;
+	max-width: 100%; 
+	box-sizing: border-box;
 	overflow: auto;
-	/* Allow child items to be wider than this element, so we actually scroll */
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-}
-/* This element implements horizontal padding within the scroller */
-body > div > div {
-	/* 
-		margin-right will work if the parent does not have overflow,
-		it will do NOTHING if the parent does have overflow
 
-		This is a flex-child, so top/bottom margin will not collapse with child margins, either. For that reason, you might as well just stick to padding on this element. 
-	*/
-	margin: 0 !important;
-
-	/* 
-		padding between content and scroller.
-		Feel free to override.
-		We recommend horizontal padding, and using top/bottom margins on your children for vertical spacing.
+	/*
+		You could add top/bottom padding, too, but we prefer to set top/bottom margin on child elements
 	*/
 	padding: 0 1rem;
-
-	/* 
-		uncomment these if you'd rather hide horizontal overflow than scroll
-	*/
-	/*box-sizing: border-box;*/
-	/*max-width: 100%;*/
 }
 
 /* 

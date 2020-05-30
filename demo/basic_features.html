@@ -6,8 +6,7 @@
 <link rel="stylesheet" href="style.css">
 <title>Standard Features</title>
 <body>
-<!-- alertModal.css required wrappers -->
-<div><div style="width: 700px;">
+<div class="AlertWindow">
 	<button 
 		type="button"
 		onclick="closeModal();" 
@@ -21,6 +20,7 @@
 	>Close</button>
 
 	<h1>Standard Features</h1>
+		
 	<p>There are a lot of UI/accessibility issues related to modal dialogs/windows. <code>openModal()</code> aims to take care of all of them for you, with zero configuration.</p>
 
 	<p>Verify for yourself that:</p>
@@ -39,4 +39,4 @@
 		<li><button onclick="location.reload();">Reloading the modal</button> will focus the <code>autofocus</code> element again</li>
 		<li>The iframe containing the modal window is the last child of the <code>body</code>, and it's z-index is "<a href="9007199254740991">maxed out</a>", so nothing can ever appear over top of it</li>
 	</ul>
-</div></div>
+</div>
