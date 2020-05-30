@@ -27,3 +27,6 @@ dd {
 	margin-left: 1rem;
 	display: block;
 }
+.AutoTocLink, .AutoTocLink:visited {
+	color: #555;
+}
