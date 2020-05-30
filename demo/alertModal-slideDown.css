@@ -1,0 +1,8 @@
+.AlertWindow {
+	/*  
+		Position the alert so it is initially offscreen.
+		Push up it's full height, plus the padding-top value of body
+	*/
+	transform: translateY(calc(-100% - 15px));
+	transition: transform 0.3s ease;
+}

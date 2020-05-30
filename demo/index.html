@@ -104,12 +104,15 @@
 		</dd>
 	</dl>
 
+	<h3>Modal Window Properties</h3>
 	<p>Inside the modal window, you must also load openModal.js. In addition to <code>openModal()</code>, the following will be available:</p>
 	<dl>
 		<dt><code>parent</code></dt>
 		<dd>The parent window (which called <code>openModal()</code>). The modal window can also navigate the parent using links with <code>target="_parent"</code>.<br> <small>These are standard features available in any iframe, but we explicitly endorse their use. We suggest that any native implementation of <code>openModal()</code> should also make these features available, even if that implementation does not use iframes.</small></dd>
 		<dt><code>closeModal([value]) -> undefined</code></dt>
 		<dd>Closes the modal window. If given, <code>value</code> will be passed to the <code>onclose</code> callback</dd>
+		<dt><code>isFirstModalLoad() -> Boolean</code></dt>
+		<dd>Returns true if this is the first document being loaded in the modal window. You may want to check this if you are animating/transitioning your modal into view. <br> <small>Ideally, this function wouldn't exist, and we'd leave it up to the modal window to set/check a flag in sessionStorage. Since <code>openModal()</code> is actually implemented using an iframe, however, the modal window actually shares sessionStorage with the parent window, making it difficult to implement the sessionStorage approach properly.</small></dd>
 	</dl>
 
 	<h2>Nesting</h2>
@@ -135,6 +138,13 @@
 	<p>You should only do this if the linked page makes sense when navigated to directly. As with any standard link, the user will be able to right-click the link and copy the link location, or shift/ctrl/command+click to open in a new window/tab.</p>
 
 	<p><a href="linked_modal.html" target="_modal">Try it out</a></p>
+
+	<h2>Animations</h2>
+	<p><code>openModal()</code> does <em>not</em> provide support for animations. It is our belief that animations should be implemented <em>within</em> the modal window, keeping the responsibilities of <code>openModal()</code> narrow and well defined.<p>
+
+	<p>
+		<button onclick="openModal('slide_down.html');">This modal</button> demonstrates how you can easily add animations inside modal window.
+	</p>
 
 	<h2>Browser Support</h2>
 	<p>We use <code>position: fixed</code>, which will not work in Opera Mini.</p>

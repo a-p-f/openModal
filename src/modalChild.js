@@ -47,6 +47,11 @@ window.closeModal = function(value) {
 	}
 }
 
+let isFirstLoad = false;
+window.isFirstModalLoad = function() {
+	return isFirstLoad;
+}
+
 let _alreadyToldParentToCloseUs = false;
 function tellParentToCloseUs() {
 	if (_alreadyToldParentToCloseUs) return
@@ -133,6 +138,8 @@ if (isModalChild()) {
 		s[depthKey] = 1;
 		history.pushState(s, '', location.href);
 		sessionStorage[depthKey] = 1;
+
+		isFirstLoad = true;
 	}
 	else if(historyStateIsReadableAndHasKey(depthKey)) {
 		// This page was reloaded from back/forward/reload

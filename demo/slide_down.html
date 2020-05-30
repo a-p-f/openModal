@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<script type="module" src="/src/openModal.js"></script>
+<script defer nomodule src="/live/openModal.js"></script>
+<link rel="stylesheet" href="alertModal.css">
+<link rel="stylesheet" href="style.css">
+
+<script defer src="alertModal-slideDown.js"></script>
+<link rel="stylesheet" href="alertModal-slideDown.css">
+
+<title>Standard Features</title>
+<body>
+<div class="AlertWindow AlertWindow-slideDown">
+	<button 
+		type="button"
+		onclick="closeModal();" 
+		autofocus
+		style="
+			float: right; 
+			margin-top: 1rem;
+			position: sticky;
+			top: 1rem;
+		"
+	>Close</button>
+
+	<h1>Animated Modal</h1>
+
+	<p>The only difference between this modal and our other alert modals is the addition of <a target="_blank" href="alertModal-slideDown.js">alertModal-slideDown.js</a> and <a target="_blank" href="alertModal-slideDown.css">alertModal-slideDown.css</a>.</p>
+
+	<p>Notice that if you <button onclick="location.reload()">reload this window</button>, the window will <em>not</em> animate down again. <code>alertModal-slideDown.js</code> checks <code>window.isFirstModalLoad()</code>, and if false, moves the window into position without animation.</p>
+
+	<p>Notice that <code>alertModal-slideDown.js</code> patches <code>window.closeModal()</code>, so that it animates the alert off-screen before closing. This is our recommended approach to handling exit animations.</p>
+
+	<p>Lastly, note that the exit animation will only run if you explicitly call <code>closeModal()</code>. If you close the modal by clicking your browser's back button, the modal will be closed immediately.</p>
+</div>
