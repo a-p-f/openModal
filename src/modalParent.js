@@ -38,6 +38,7 @@ function closeChild() {
 	The only reason this is here is in case the page uses pushState, then opens a modal window, then the user uses the browser's back button drop down to go back multiple entries at once.
 */
 addEventListener('popstate', function() {
+	// TODO - we probably shouldn't replace state in this case
 	if (iframe.iframe) closeChild();
 });
 
@@ -50,7 +51,11 @@ window.openModal = function(url, {
 		throw new Error('A modal window is already open. A window may only open one modal window at a time.');
 	}
 
+	// Note - we save the state, so that we can restore it later (after closing the modal)
+	// Some browsers (IE) seem to prevent us from accessing the state after modal close, unless we do this
 	saved_state = history.state;
+	// TODO - why do we do this? PROBLEM: if user reloads page while modal is open, then we end up in this broken state (which might mess up other scripts on the page)
+	// We can leave state unchanged now, and still replace it later
 	history.replaceState('PLACEHOLDER', '', location.href);
 	// TODO - special marker state, closeChild() only goes back() if in this state?
 	lockScroll();
