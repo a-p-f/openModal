@@ -172,6 +172,32 @@
 	</ul>
 	<p><small>TODO: more extensive browser testing <br>TODO: drop <code>position: fixed</code> requirement and support Opera Mini?</small></p>
 
+	<h2>Known Issues</h2>
+
+	<h3>Reloading Parent - State Lost</h3>
+	<p>If a parent is reloaded (either programmatically or by user) while it has a modal child open, we have no opportunity to clean up the child history states. <code>history.length</code> will increase in the parent window, and <code>history.state</code> may not be the same as before the child window was opened (Safari, in particular, seems to fail). TODO: working demo.</p>
+	<!--
+	<p><button onclick="
+		history.pushState('reload_while_open_history_restore_test', document.title, location.href);
+		setTimeout(function() {
+
+		openModal('reload_while_open.html');
+		}, 500);
+	">This button</button> calls <code>history.replaceState()</code>, then opens a modal window which immediately reloads the parent window.</p>
+	<p>After clicking the above button, <button
+		onclick="
+			if (history.state != 'reload_while_open_history_restore_test') {
+				alert('FAIL! History state was not restored.');
+			}
+			else {
+				alert('Success');
+			}
+		"
+	>
+		verify that parent state remained unchanged
+	</button>.</p>
+	-->
+
 	<h2>Contact</h2>
 	<p>Have any questions, suggestions, or concerns? Feel free to <a href="https://github.com/a-p-f/openModal/issues/new">create an issue on our issue tracker</a>, or email me directly at <a href="mailto:alex.p.fischer.81@gmail.com">alex.p.fischer.81@gmail.com</a>.</p>
 

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="module" src="/src/openModal.js"></script>
+<script defer nomodule src="/live/openModal.js"></script>
+<title>Reload While Open History Restore Test</title>
+
+<script type="text/javascript">
+	setTimeout(function() {
+		window.parent.location.reload();
+	}, 500);
+</script>

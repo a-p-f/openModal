@@ -39,6 +39,7 @@ function closeChild() {
 */
 addEventListener('popstate', function() {
 	// TODO - we probably shouldn't replace state in this case
+	// Pass flag to closeChild?
 	if (iframe.iframe) closeChild();
 });
 
@@ -54,10 +55,6 @@ window.openModal = function(url, {
 	// Note - we save the state, so that we can restore it later (after closing the modal)
 	// Some browsers (IE) seem to prevent us from accessing the state after modal close, unless we do this
 	saved_state = history.state;
-	// TODO - why do we do this? PROBLEM: if user reloads page while modal is open, then we end up in this broken state (which might mess up other scripts on the page)
-	// We can leave state unchanged now, and still replace it later
-	history.replaceState('PLACEHOLDER', '', location.href);
-	// TODO - special marker state, closeChild() only goes back() if in this state?
 	lockScroll();
 	onclose_callback = onclose;
 	onclose_value = undefined;
