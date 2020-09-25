@@ -134,7 +134,10 @@ if (isModalChild()) {
 			Push a new state, so that we can detect history.back().
 			If we ever get back to the "initial state", we'll close this modal window.
 		*/
-		const s = {};
+
+		// Important - other scripts might be using history.state - don't wipe it out
+		// As long as they use it "cooperatively", we'll be fine
+		const s = history.state || {};
 		s[depthKey] = 1;
 		history.pushState(s, '', location.href);
 		sessionStorage[depthKey] = 1;

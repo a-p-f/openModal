@@ -28,6 +28,8 @@ window._setOpenModalCloseValue = function(value) {
 }
 function closeChild() {
 	iframe.remove();
+	// Note - we restore the state as it was before the call to openModal()
+	// This shouldn't have any effect, but some browsers (IE) seem to prevent us from accessing the state after modal close, unless we do this
 	history.replaceState(saved_state, '', location.href);
 	releaseScroll();
 	onclose_callback(onclose_value);
