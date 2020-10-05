@@ -3,6 +3,17 @@ let previousActiveElement;
 export let iframe;
 
 export function create(url, background, onload) {
+	/*
+		TODO:
+		Add mutation observer to detect when other scripts move/delete our iframe
+		(log warning / throw exception when it does)
+		This breaks the page, because openModal thinks child is open (and we block interaction of parent page). We could try to recover, but throwing exception is probably enough. External scripts should NOT be messing with out iframe while it is open.
+	*/
+
+	if (iframe) {
+		throw new Error('iframe already exists!');
+	}
+
 	previousActiveElement = getActiveElement();
 	addEventListener('click', cancel, true);
 	document.body.addEventListener('focus', refocus_iframe, true);
