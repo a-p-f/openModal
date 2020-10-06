@@ -24,10 +24,15 @@ export function create(url, background, onload) {
 	s.top = 0;s.left = 0;s.width = '100%';s.height = '100%';
 	s.border = 'none';
 	s.margin = 0; s.padding = 0;
+
+	// This is the maximum supported z-index in current browsers (max 32 bit signed int), but the CSS spec doesn't actually specify this
+	// We need to set this value for IE, which doesn't work when you set z-index to any higher number
+	s.zIndex = 2147483647;
+
 	// This is MAX_SAFE_INTEGER in JS
 	// This is larger than the maximum supported z-index in any current browser
-	// All modern browsers treat this as equivalent to the maximum possible z-index
-	// TODO - test
+	// In IE, this has no effect.
+	// In other browsers, this always seems to set z-index to the highest supported value, and should protect against future increases in that value.
 	s.zIndex = 9007199254740991;
 
 	// TODO - fallback for browsers not supporting position: fixed (Opera Mini)
