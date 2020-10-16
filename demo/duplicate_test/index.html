@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Duplicate Test</title>
+    <!-- Notice - we test bundled code, even if browser supports modules -->
+    <script defer src="/live/openModal.js"></script>
+    <script defer src="/live/openModal.js"></script>
+    <link rel="stylesheet" href="../style.css">
+
+</head>
+<body>
+    <p>
+        This page loads openModal twice. You should see an error message in the console, but openModal should still work.
+    </p>
+    <p>
+        <button onclick='openModal("modal.html")'>Open child modal</button>, then close it. You should remain on this page. Nothing should blow up.    
+    </p>
+</body>
+</html>

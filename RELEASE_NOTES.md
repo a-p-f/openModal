@@ -1,3 +1,7 @@
+### 0.1.4
+
+Protect against case where user loads script multiple times on same page.
+
 ### 0.1.3
 
 IE z-index fix
