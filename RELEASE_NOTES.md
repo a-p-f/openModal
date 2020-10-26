@@ -1,3 +1,7 @@
+### 0.2.0
+
+Append iframe to `html` directly, instead of body, to ensure that it appears on top of other dynamically added elements.
+
 ### 0.1.4
 
 Protect against case where user loads script multiple times on same page.
