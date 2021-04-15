@@ -1,3 +1,7 @@
+### 0.3.1
+IE bug work-around.
+Fix issue where IE was preventing clicking into inputs after closing a modal with a focued input element.
+
 ## 0.3.0
 Revert 0.2.0 - insert iframe at end of body, not html.
 

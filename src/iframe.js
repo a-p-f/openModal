@@ -61,6 +61,17 @@ export function create(url, background, onload) {
 }
 export function remove() {
 	if (!iframe) return
+
+	/*
+		IE bug workaround
+		IE doesn't like it when you remove an iframe if that iframe contains an input element which is currently focused.
+		If you do, you won't be able to properly focus inputs on parent page via mouse.
+		You _will_ be able to focus them via keyboard, and click buttons, but clicking inputs doesn't let you type into them.
+		
+		Clearing the document of the iframe before removing it seems to prevent this bug.
+	*/
+	iframe.src = '';
+
 	iframe.parentElement.removeChild(iframe);
 	removeEventListener('click', cancel, true);
 	document.body.removeEventListener('focus', refocus_iframe, true); 
