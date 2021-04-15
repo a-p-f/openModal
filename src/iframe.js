@@ -16,9 +16,14 @@ export function create(url, background, onload) {
 
 	previousActiveElement = getActiveElement();
 	addEventListener('click', cancel, true);
-	document.documentElement.addEventListener('focus', refocus_iframe, true);
+	document.body.addEventListener('focus', refocus_iframe, true);
 
 	iframe = document.createElement('iframe');
+
+	// Just in case other scripts want to be able to identify our iframe.
+	// Ideally they shouldn't know it's in the DOM at all, but occasionally this might help so that they can explicitly ignore it.
+	iframe.classList.add('openModal-iframe');
+
 	var s = iframe.style;
 	s.position= 'fixed';
 	s.top = 0;s.left = 0;s.width = '100%';s.height = '100%';
@@ -42,7 +47,7 @@ export function create(url, background, onload) {
 	// and https://developer.paciellogroup.com/blog/2018/06/the-current-state-of-modal-dialog-accessibility/
 	// which suggest there is a serious issue in safari
 	iframe.setAttribute('aria-modal', 'true');
-	document.documentElement.appendChild(iframe);
+	document.body.appendChild(iframe);
 
 	if (background) {
 		iframe.style.background = background;
@@ -58,7 +63,7 @@ export function remove() {
 	if (!iframe) return
 	iframe.parentElement.removeChild(iframe);
 	removeEventListener('click', cancel, true);
-	document.documentElement.removeEventListener('focus', refocus_iframe, true); 
+	document.body.removeEventListener('focus', refocus_iframe, true); 
 	previousActiveElement && previousActiveElement.focus();
 	previousActiveElement = null;
 	iframe = null;

@@ -1,6 +1,13 @@
-### 0.2.0
+## 0.3.0
+Revert 0.2.0 - insert iframe at end of body, not html.
+
+Add 'openModal-iframe' class to the iframe, in case any other scripts need to identify it.
+
+## 0.2.0 - BROKEN IN IE - DO NOT USE
 
 Append iframe to `html` directly, instead of body, to ensure that it appears on top of other dynamically added elements.
+
+PROBLEM: Most things seem to work, but IE doesn't let you insert text into inputs in the iframe if it's inserted directly into html element. They can receive focus, but the cursor isn't in the correct spot, and you can't insert any characters.
 
 ### 0.1.4
 
